@@ -41,21 +41,23 @@ export async function fetchVideoDetails(videoId: string) {
   return data.items[0];
 }
 
-export async function searchVideos(query: string, maxResults: number = 12) {
+export async function searchVideos(query: string, pageToken: string | null = null) {
   const params = new URLSearchParams({
     part: "snippet",
     q: query,
-    maxResults: maxResults.toString(),
+    type: "video",
+    maxResults: "20",
     key: API_KEY!,
-  });
+  })
 
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/search?${params}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch search results");
+  if (pageToken) {
+    params.append("pageToken", pageToken)
   }
 
-  const data = await response.json();
-  return data
+  const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`)
+  if (!response.ok) {
+    throw new Error("Failed to search videos")
+  }
+
+  return response.json()
 }
