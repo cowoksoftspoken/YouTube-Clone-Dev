@@ -6,6 +6,9 @@ import { useInView } from "react-intersection-observer";
 import VideoCard from "@/components/video-card";
 import VideoCardSkeleton from "@/components/video-card-skeleton";
 import { searchVideos } from "@/lib/youtube-api";
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500"] });
 
 export default function SearchResults() {
   const searchParams = useSearchParams();
@@ -47,11 +50,14 @@ export default function SearchResults() {
   }, [inView, loadMoreVideos]);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Search Results for "{query}"</h1>
+    <div className={roboto.className} id={sid}>
+      <h1 className="text-xl italic mb-4" data-query={query}>
+        Search Results for{" "}
+        <strong className="text-orange-500">"{query}"</strong>
+      </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {videos.map((video, index) => (
-          <VideoCard key={index + 2} index={index} video={video} />
+          <VideoCard key={index + 2} video={video} />
         ))}
         {loading && (
           <>

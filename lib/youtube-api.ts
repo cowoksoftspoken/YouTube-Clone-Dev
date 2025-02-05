@@ -31,7 +31,12 @@ export async function fetchVideoDetails(videoId: string) {
   });
 
   const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?${params}`
+    `https://www.googleapis.com/youtube/v3/videos?${params}`,
+    {
+      next: {
+        revalidate: 3600,
+      },
+    }
   );
   if (!response.ok) {
     throw new Error("Failed to fetch video details");
@@ -41,23 +46,28 @@ export async function fetchVideoDetails(videoId: string) {
   return data.items[0];
 }
 
-export async function searchVideos(query: string, pageToken: string | null = null) {
+export async function searchVideos(
+  query: string,
+  pageToken: string | null = null
+) {
   const params = new URLSearchParams({
     part: "snippet",
     q: query,
     type: "video",
     maxResults: "20",
     key: API_KEY!,
-  })
+  });
 
   if (pageToken) {
-    params.append("pageToken", pageToken)
+    params.append("pageToken", pageToken);
   }
 
-  const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`)
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/search?${params}`
+  );
   if (!response.ok) {
-    throw new Error("Failed to search videos")
+    throw new Error("Failed to search videos");
   }
 
-  return response.json()
+  return response.json();
 }

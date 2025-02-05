@@ -16,8 +16,17 @@ export default function SearchBar() {
     if (query.trim()) {
       const sid = generateSessionId();
       router.push(
-        `/results?search_query=${encodeURIComponent(query)}&sid=${sid}`
+        `/results?search_query=${encodeURIComponent(
+          query
+        )}&sid=${sid}&sort=relevance&date=${Date.now()}`
       );
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
@@ -31,7 +40,8 @@ export default function SearchBar() {
         placeholder="Search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="flex-1"
+        onKeyDown={handleKeyDown}
+        className="flex-1 outline-none"
       />
       <Button type="submit" size="icon">
         <Search className="h-4 w-4" />

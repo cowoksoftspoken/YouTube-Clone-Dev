@@ -3,39 +3,56 @@ import Link from "next/link";
 import { formatViews, formatPublishedDate } from "@/lib/utils";
 
 interface Video {
-  id: { videoId: string };
+  id: { videoId: string } | string;
   snippet: {
     title: string;
-    thumbnails: { medium: { url: string } };
+    thumbnails: { medium: { url: string }; default: { url: string } };
     channelTitle: string;
     publishedAt: string;
   };
   statistics?: { viewCount: string };
 }
 
-export default function VideoCard({
-  video,
-  index,
-}: {
+interface VideoCardProps {
   video: Video;
-  index: number;
-}) {
+  compact?: boolean;
+}
+
+export default function VideoCard({ video, compact = false }: VideoCardProps) {
+  const videoId = typeof video.id === "string" ? video.id : video.id.videoId;
+
   return (
-    <Link href={`/watch/${video.id}`} key={index}>
-      <div className="group cursor-pointer">
-        <div className="aspect-video overflow-hidden rounded-lg">
+    <Link href={`/watch/${videoId}`}>
+      <div
+        className={`group cursor-pointer ${
+          compact ? "flex items-start space-x-2" : ""
+        }`}
+      >
+        <div
+          className={`overflow-hidden rounded-lg ${
+            compact ? "w-40 flex-shrink-0" : "aspect-video"
+          }`}
+        >
           <Image
-            src={video.snippet.thumbnails.medium.url || "/placeholder.svg"}
+            src={
+              compact
+                ? video.snippet.thumbnails.default.url
+                : video.snippet.thumbnails.medium.url
+            }
             alt={video.snippet.title}
-            width={320}
-            height={180}
+            width={compact ? 190 : 320}
+            height={compact ? 90 : 180}
             priority
-            quality={90}
+            quality={compact ? 70 : 100}
             className="object-cover transition-transform group-hover:scale-110"
           />
         </div>
-        <div className="mt-2">
-          <h3 className="text-base font-semibold line-clamp-2">
+        <div className={compact ? "flex-grow" : "mt-2"}>
+          <h3
+            className={`font-semibold line-clamp-2 ${
+              compact ? "text-sm" : "text-base"
+            }`}
+          >
             {video.snippet.title}
           </h3>
           <p className="text-sm text-muted-foreground">
