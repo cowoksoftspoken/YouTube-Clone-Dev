@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {videos.map((video, index) => (
-        <VideoCard key={index + 2} type="watch" index={index} video={video} />
+        <VideoCard key={index + 2} video={video} />
       ))}
       {loading && (
         <>
