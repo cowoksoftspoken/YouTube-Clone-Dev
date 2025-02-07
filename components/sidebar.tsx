@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   Home,
   Compass,
@@ -11,7 +11,7 @@ import {
   Newspaper,
   Music2,
   Radio,
-} from "lucide-react"
+} from "lucide-react";
 
 const sidebarItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -25,7 +25,7 @@ const sidebarItems = [
   { icon: Newspaper, label: "News", href: "/news" },
   { icon: Music2, label: "Music", href: "/music" },
   { icon: Radio, label: "Live", href: "/live" },
-]
+];
 
 export default function Sidebar() {
   return (
@@ -35,7 +35,7 @@ export default function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className="flex items-center space-x-3 rounded-lg px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground"
+            className="flex items-center space-x-3 rounded-lg px-3 py-2 text-foreground hover:bg-[#060606] hover:text-accent-foreground"
           >
             <item.icon className="h-5 w-5" />
             <span>{item.label}</span>
@@ -43,6 +43,5 @@ export default function Sidebar() {
         ))}
       </nav>
     </aside>
-  )
+  );
 }
-

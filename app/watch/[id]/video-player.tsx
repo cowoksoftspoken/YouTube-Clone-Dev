@@ -5,7 +5,7 @@ import { formatViews, formatPublishedDate } from "@/lib/utils";
 import RelatedVideos from "@/components/related-videos";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Heart } from "lucide-react";
+import { Share2Icon, ThumbsUp } from "lucide-react";
 
 interface VideoDetails {
   id: string;
@@ -26,12 +26,35 @@ interface VideoPlayerProps {
   videoId: string;
 }
 
+function displayText(text: string, limit: number) {
+  if (text) {
+    return text.length > limit ? text.slice(0, limit) + "..." : text;
+  }
+  return "No description available.";
+}
+
 export default function VideoPlayer({
   initialVideo,
   videoId,
 }: VideoPlayerProps) {
   const [video] = useState<VideoDetails>(initialVideo);
+  const [limit, setLimit] = useState<number>(500);
   if (typeof window !== "undefined") document.title = video.snippet.title;
+
+  const handleSetLimit = () => {
+    setLimit(limit === 500 ? video.snippet.description.length : 500);
+  };
+
+  const handleShare = () => {
+    navigator
+      .share({
+        title: video.snippet.title,
+        text: video.snippet.description,
+        url: window.location.href,
+      })
+      .then(() => console.log("Successful share"))
+      .catch((error) => console.log("Error sharing:", error));
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
@@ -57,17 +80,33 @@ export default function VideoPlayer({
               {formatPublishedDate(new Date(video.snippet.publishedAt))}
             </p>
           </div>
-          <div className="flex items-center space-x-1">
-            <Heart className="h-5" fill="current" />
-            <p className="text-sm font-semibold">
-              {formatViews(Number.parseInt(video.statistics.likeCount))}{" "}
-            </p>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-1">
+              <ThumbsUp className="h-5" fill="current" />
+              <p className="text-sm font-semibold">
+                {formatViews(Number.parseInt(video.statistics.likeCount))}{" "}
+              </p>
+              <span className="sr-only">Thumbs Up</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Share2Icon
+                fill="current"
+                className="cursor-pointer h-5"
+                onClick={() => handleShare()}
+              />
+              <p className="text-sm font-semibold">Share</p>
+              <span className="sr-only">Share</span>
+            </div>
           </div>
         </div>
-        <div className="mt-4 text-sm whitespace-pre-wrap">
+        <div
+          className="mt-4 text-sm whitespace-pre-wrap dark:bg-[#060606] bg-slate-200 cursor-pointer p-4 rounded-lg"
+          onClick={handleSetLimit}
+        >
           <ReactMarkdown
-            rehypePlugins={[remarkGfm]}
-            children={video.snippet.description}
+            remarkPlugins={[remarkGfm]}
+            children={displayText(video.snippet.description, limit)}
           />
         </div>
       </div>

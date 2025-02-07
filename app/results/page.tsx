@@ -41,7 +41,7 @@ export default function SearchResults() {
     setNextPageToken(null);
     setLoading(true);
     loadMoreVideos();
-  }, []);
+  }, [query]);
 
   useEffect(() => {
     if (inView) {
@@ -51,9 +51,12 @@ export default function SearchResults() {
 
   return (
     <div className={roboto.className} id={sid}>
-      <h1 className="text-xl italic mb-4" data-query={query}>
-        Search Results for{" "}
-        <strong className="text-orange-500">"{query}"</strong>
+      <h1
+        className="text-base text-pretty mb-4 font-normal"
+        data-query={btoa(query)}
+      >
+        Hasil pencarian untuk{" "}
+        <strong className="text-gray-400">"{query}"</strong>
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {videos.map((video, index) => (

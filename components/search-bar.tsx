@@ -20,6 +20,7 @@ export default function SearchBar() {
           query
         )}&sid=${sid}&sort=relevance&date=${Date.now()}`
       );
+      router.refresh();
     }
   };
 

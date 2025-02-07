@@ -1,7 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["i.ytimg.com"],
+    remotePatterns: [
+      {
+        hostname: "i.ytimg.com",
+        protocol: "https",
+      },
+      {
+        hostname: "yt3.ggpht.com",
+        protocol: "https",
+      },
+    ],
   },
 };
 
