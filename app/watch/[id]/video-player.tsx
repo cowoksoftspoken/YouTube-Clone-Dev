@@ -48,9 +48,9 @@ export default function VideoPlayer({
   const handleShare = () => {
     navigator
       .share({
+        url: window.location.href,
         title: video.snippet.title,
         text: video.snippet.description,
-        url: window.location.href,
       })
       .then(() => console.log("Successful share"))
       .catch((error) => console.log("Error sharing:", error));
