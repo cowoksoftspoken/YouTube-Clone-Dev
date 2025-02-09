@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatViews, formatPublishedDate } from "@/lib/utils";
+import { formatViews, formatPublishedDate, formatDuration } from "@/lib/utils";
 
 interface Video {
   id: { videoId: string } | string;
