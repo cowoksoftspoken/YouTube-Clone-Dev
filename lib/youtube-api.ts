@@ -2,7 +2,7 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
 export async function fetchVideos(pageToken: string | null = null) {
   const params = new URLSearchParams({
-    part: "snippet,statistics",
+    part: "snippet,statistics,contentDetails",
     chart: "mostPopular",
     maxResults: "12",
     regionCode: "ID",
