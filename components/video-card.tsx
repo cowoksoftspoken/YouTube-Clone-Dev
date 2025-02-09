@@ -10,6 +10,7 @@ interface Video {
     channelTitle: string;
     publishedAt: string;
   };
+   contentDetails?: { duration: string };
   statistics?: { viewCount: string };
 }
 
@@ -29,7 +30,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
         }`}
       >
         <div
-          className={`overflow-hidden rounded-lg ${
+          className={`overflow-hidden rounded-lg relative ${
             compact ? "w-40 flex-shrink-0" : "aspect-video"
           }`}
         >
@@ -46,6 +47,11 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             quality={compact ? 70 : 100}
             className="object-cover transition-transform group-hover:scale-110"
           />
+          {video.contentDetails && (
+            <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 rounded">
+              {formatDuration(video.contentDetails.duration)}
+            </div>
+          )}
         </div>
         <div className={compact ? "flex-grow" : "mt-2"}>
           <h3
