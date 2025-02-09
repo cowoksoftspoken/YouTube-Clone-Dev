@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useInView } from "react-intersection-observer";
-import VideoCard from "@/components/video-card";
 import VideoCardSkeleton from "@/components/video-card-skeleton";
 import { searchVideos } from "@/lib/youtube-api";
 import { Roboto } from "next/font/google";
+import VideoCardForSearch from "@/components/video-card-for-search";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500"] });
 
@@ -14,6 +14,8 @@ export default function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("search_query") || "";
   const sid = searchParams.get("sid") || "";
+  const shortedBy = searchParams.get("sort") || "Relevance";
+  const date = searchParams.get("date") || Date.now().toString();
 
   const [videos, setVideos] = useState<any[]>([]);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
@@ -51,16 +53,14 @@ export default function SearchResults() {
 
   return (
     <div className={roboto.className} id={sid}>
-      <h1
-        className="text-base text-pretty mb-4 font-normal"
-        data-query={btoa(query)}
+      <span className="sr-only">Penelusuran untuk {query}</span>
+      <div
+        className="grid grid-cols-1 gap-4"
+        data-shortedby={shortedBy}
+        data-searchdate={date}
       >
-        Hasil pencarian untuk{" "}
-        <strong className="text-gray-400">"{query}"</strong>
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {videos.map((video, index) => (
-          <VideoCard key={index + 2} video={video} />
+          <VideoCardForSearch key={index + 2} video={video} />
         ))}
         {loading && (
           <>
