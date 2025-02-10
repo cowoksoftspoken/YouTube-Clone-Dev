@@ -41,7 +41,7 @@ export default function SearchBar({
       className="flex w-full max-w-sm relative items-center space-x-2"
     >
       <Input
-        type="search"
+        type="text"
         placeholder="Search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -51,7 +51,7 @@ export default function SearchBar({
       <Button
         type="submit"
         size="icon"
-        className="absolute right-0"
+        className="absolute md:right-0 right-12"
         variant="ghost"
       >
         <Search className="h-4 w-4" />
