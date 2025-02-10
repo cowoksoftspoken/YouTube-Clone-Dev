@@ -66,7 +66,7 @@ export default function VideoPlayer({
             src={`https://www.youtube.com/embed/${videoId}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="w-full md:h-full h-[400px]"
+            className="w-full h-full"
           ></iframe>
         </div>
         <h1 className="text-2xl font-bold mt-4">{video.snippet.title}</h1>
