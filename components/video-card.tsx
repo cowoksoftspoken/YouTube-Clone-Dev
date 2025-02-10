@@ -10,7 +10,7 @@ interface Video {
     channelTitle: string;
     publishedAt: string;
   };
-   contentDetails?: { duration: string };
+  contentDetails?: { duration: string };
   statistics?: { viewCount: string };
 }
 
@@ -21,6 +21,7 @@ interface VideoCardProps {
 
 export default function VideoCard({ video, compact = false }: VideoCardProps) {
   const videoId = typeof video.id === "string" ? video.id : video.id.videoId;
+  const isMobile = window.matchMedia("(max-width: 640px)").matches;
 
   return (
     <Link href={`/watch/${videoId}`}>
@@ -41,10 +42,11 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
                 : video.snippet.thumbnails.medium.url
             }
             alt={video.snippet.title}
-            width={compact ? 190 : 320}
+            width={compact ? 190 : isMobile ? 500 : 320}
             height={compact ? 90 : 180}
             priority
             quality={compact ? 70 : 100}
+            layout="responsive"
             className="object-cover transition-transform group-hover:scale-110"
           />
           {video.contentDetails && (
