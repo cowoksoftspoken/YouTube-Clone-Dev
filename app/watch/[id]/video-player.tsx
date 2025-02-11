@@ -59,7 +59,7 @@ export default function VideoPlayer({
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="lg:w-2/3">
-        <div className="aspect-video overflow-hidden rounded-lg h-[384px] h-auto">
+        <div className="aspect-video overflow-hidden rounded-lg">
           <iframe
             width="100%"
             height="100%"
