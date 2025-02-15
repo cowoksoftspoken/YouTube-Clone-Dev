@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { fetchVideoDetails } from "@/lib/youtube-api";
+import { fetchVideoDetails, fetchChannelDetails } from "@/lib/youtube-api";
 import VideoPlayer from "./video-player";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -10,11 +10,16 @@ export default async function WatchPage({
 }) {
   const resolvedParams = await params;
   const videoData = await fetchVideoDetails(resolvedParams.id);
+  const channelData = await fetchChannelDetails(videoData.snippet.channelId);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-3">
+    <div className="md:max-w-7xl max-w-full mx-auto md:px-4 px-2 py-3">
       <Suspense fallback={<LoadingSkeleton />}>
-        <VideoPlayer initialVideo={videoData} videoId={resolvedParams.id} />
+        <VideoPlayer
+          initialVideo={videoData}
+          channelDetails={channelData}
+          videoId={resolvedParams.id}
+        />
       </Suspense>
     </div>
   );

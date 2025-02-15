@@ -32,7 +32,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
       >
         <div
           className={`overflow-hidden rounded-lg relative ${
-            compact ? "w-40 flex-shrink-0" : "aspect-video"
+            compact ? "w-40 flex-shrink-0 mb-2" : "aspect-video"
           }`}
         >
           <Image
