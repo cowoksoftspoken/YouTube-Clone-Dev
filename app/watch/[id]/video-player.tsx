@@ -109,7 +109,11 @@ export default function VideoPlayer({
               className="rounded-full"
             />
             <div>
-              <h2 className="font-semibold">{video.snippet.channelTitle}</h2>
+              <h2 className="font-semibold">
+                {video.snippet.channelTitle.length > 13
+                  ? video.snippet.channelTitle.slice(0, 13) + "..."
+                  : video.snippet.channelTitle}
+              </h2>
               <p className="text-sm text-muted-foreground">
                 {formatViews(
                   Number.parseInt(channelDetails.statistics.subscriberCount)
@@ -117,7 +121,7 @@ export default function VideoPlayer({
                 subscribers
               </p>
             </div>
-            <button className="bg-[#060606] dark:bg-white text-white dark:text-black px-4 py-2 rounded-full flex items-center space-x-2 text-sm dark:text-black text-white translate-x-[4.5rem] md:translate-x-0">
+            <button className="bg-[#060606] dark:bg-white text-white dark:text-black px-4 py-2 rounded-full flex items-center space-x-2 text-sm dark:text-black text-white translate-x-12 md:translate-x-0">
               Subscribe
             </button>
           </div>
@@ -141,7 +145,7 @@ export default function VideoPlayer({
             </button>
             <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex lg:hidden dark:text-white px-4 py-2 rounded-full flex items-center space-x-2 text-sm ml-2">
               <Download className="cursor-pointer mr-2 h-4 w-4" />
-              Download
+              Unduh
             </button>
             <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black dark:text-white p-2 rounded-full flex items-center text-sm  ml-2 hidden lg:flex">
               <MoreHorizontal className="cursor-pointer h-4 w-4" />
