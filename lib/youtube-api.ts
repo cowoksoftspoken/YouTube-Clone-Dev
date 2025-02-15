@@ -27,7 +27,7 @@ export async function fetchChannelDetails(channelId: string) {
   const params = new URLSearchParams({
     part: "snippet,statistics",
     id: channelId,
-    key: API_KEY,
+    key: API_KEY!,
   })
 
   try {
