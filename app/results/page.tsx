@@ -57,7 +57,7 @@ export default function SearchResults() {
       <div
         className="grid grid-cols-1 gap-4"
         data-shortedby={shortedBy}
-        data-searchdate={date}
+        data-searchdate={new Date(date)}
       >
         {videos.map((video, index) => (
           <VideoCardForSearch key={index + 2} video={video} />
