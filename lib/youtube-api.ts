@@ -28,28 +28,70 @@ export async function fetchChannelDetails(channelId: string) {
     part: "snippet,statistics",
     id: channelId,
     key: API_KEY!,
-  })
+  });
 
   try {
-    const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?${params}`, {
-      next: {
-        revalidate: 3600,
-      },
-    })
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch channel details: ${response.statusText}`)
+      throw new Error(
+        `Failed to fetch channel details: ${response.statusText}`
+      );
     }
 
-    const data = await response.json()
+    const data = await response.json();
     if (!data.items || data.items.length === 0) {
-      throw new Error("Channel not found")
+      throw new Error("Channel not found");
     }
 
-    return data.items[0]
+    return data.items[0];
   } catch (error) {
-    console.error("Error fetching channel details:", error)
-    throw error
+    console.error("Error fetching channel details:", error);
+    throw error;
+  }
+}
+
+export async function fetchChannelVideos(
+  channelId: string,
+  pageToken: string | null = null
+) {
+  const params = new URLSearchParams({
+    part: "snippet",
+    channelId: channelId,
+    order: "date",
+    maxResults: "20",
+    key: API_KEY!,
+  });
+
+  if (pageToken) {
+    params.append("pageToken", pageToken);
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch channel videos: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching channel videos:", error);
+    throw error;
   }
 }
 
@@ -100,4 +142,75 @@ export async function searchVideos(
   }
 
   return response.json();
+}
+
+export async function fetchChannelPlaylists(
+  channelId: string,
+  pageToken: string | null = null
+) {
+  const params = new URLSearchParams({
+    part: "snippet,contentDetails",
+    channelId: channelId,
+    maxResults: "10",
+    key: API_KEY!,
+  });
+
+  if (pageToken) {
+    params.append("pageToken", pageToken);
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlists?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch channel playlists: ${response.statusText}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching channel playlists:", error);
+    throw error;
+  }
+}
+
+export async function fetchChannelAbout(channelId: string) {
+  const params = new URLSearchParams({
+    part: "snippet,statistics,brandingSettings",
+    id: channelId,
+    key: API_KEY!,
+  });
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch channel about: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    if (!data.items || data.items.length === 0) {
+      throw new Error("Channel not found");
+    }
+
+    return data.items[0];
+  } catch (error) {
+    console.error("Error fetching channel about:", error);
+    throw error;
+  }
 }

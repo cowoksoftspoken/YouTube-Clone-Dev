@@ -15,6 +15,14 @@ export function formatViews(views: number): string {
   }
 }
 
+export function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function formatDuration(duration: string): string {
   const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
   if (!match) return "0:00";

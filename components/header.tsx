@@ -6,14 +6,21 @@ import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import SearchBar from "./search-bar";
 import { useState } from "react";
+import Sidebar from "./sidebar";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   return (
     <header className="sticky top-0 z-50 w-full  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center px-3 justify-between">
         <div className="flex items-center">
-          <Button variant="ghost" size="icon" className="mr-2 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSidebarOpen((state) => !state)}
+            className="mr-2 md:hidden"
+          >
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle sidebar</span>
           </Button>
@@ -55,6 +62,11 @@ export default function Header() {
           </div>
         </div>
       )}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        className="md:hidden block"
+        onCloseAction={() => setIsSidebarOpen(false)}
+      />
     </header>
   );
 }

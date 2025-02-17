@@ -1,7 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   Home,
   Compass,
@@ -18,10 +16,7 @@ import {
   Lightbulb,
   Shirt,
   Trophy,
-  X,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 
 const sidebarItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -49,51 +44,15 @@ const sidebarItems = [
   { icon: Shirt, label: "Fashion & Beauty", href: "/fashion-beauty" },
 ];
 
-interface SidebarProps {
-  className?: string;
-  isOpen: boolean;
-  onCloseAction: () => void;
-}
-
-export default function Sidebar({
-  className,
-  isOpen,
-  onCloseAction,
-}: SidebarProps) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onCloseAction();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [onCloseAction]);
-
+export default function SidebarDesktop({ className }: { className?: string }) {
   return (
     <>
-      <div
-        className={cn(
-          "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-opacity md:hidden",
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
-        onClick={onCloseAction}
-      />
       <aside
         className={cn(
-          "fixed top-0 left-0 bottom-0 z-50 w-64 bg-background transition-transform duration-300 ease-in-out transform md:translate-x-0 md:static h-[100vh] overflow-y-auto",
-          isOpen ? "translate-x-0" : "-translate-x-full",
+          "fixed top-0 left-0 bottom-0 z-50 w-64 bg-background transition-transform duration-300 ease-in-out transform md:translate-x-0 md:static h-full overflow-y-auto md:flex hidden",
           className
         )}
       >
-        <div className="flex justify-between items-center p-4 md:hidden">
-          <span className="font-semibold">Youtube</span>
-          <Button variant="ghost" size="icon" onClick={onCloseAction}>
-            <X className="h-5 w-5" />
-            <span className="sr-only">Close sidebar</span>
-          </Button>
-        </div>
         <div className="space-y-4 py-4 pb-20">
           {sidebarItems.map((item, index) => {
             if (item.divider) {
@@ -119,7 +78,6 @@ export default function Sidebar({
                 key={item.href}
                 href={item.href!}
                 className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={onCloseAction}
               >
                 {item.icon && <item.icon className="h-5 w-5" />}
                 <span className="text-sm font-medium">{item.label}</span>

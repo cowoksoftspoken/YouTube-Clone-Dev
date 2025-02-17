@@ -21,7 +21,9 @@ interface VideoCardProps {
 
 export default function VideoCard({ video, compact = false }: VideoCardProps) {
   const videoId = typeof video.id === "string" ? video.id : video.id.videoId;
-  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  const isWindowAvailable = typeof window !== "undefined";
+  const isMobile =
+    isWindowAvailable && window.matchMedia("(max-width: 640px)").matches;
 
   return (
     <Link href={`/watch/${videoId}`}>

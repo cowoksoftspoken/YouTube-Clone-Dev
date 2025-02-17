@@ -6,6 +6,7 @@ import RelatedVideos from "@/components/related-videos";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Share2Icon,
   ThumbsUp,
@@ -108,7 +109,7 @@ export default function VideoPlayer({
               height={40}
               className="rounded-full"
             />
-            <div>
+            <Link href={`/channel/${channelDetails.id}`}>
               <h2 className="font-semibold">
                 {video.snippet.channelTitle.length > 13
                   ? video.snippet.channelTitle.slice(0, 13) + "..."
@@ -120,7 +121,7 @@ export default function VideoPlayer({
                 )}{" "}
                 subscribers
               </p>
-            </div>
+            </Link>
             <button className="bg-[#060606] dark:bg-white text-white dark:text-black px-4 py-2 rounded-full flex items-center space-x-2 text-sm dark:text-black text-white translate-x-12 md:translate-x-0">
               Subscribe
             </button>
@@ -156,7 +157,7 @@ export default function VideoPlayer({
           className="mt-4 text-sm whitespace-pre-wrap dark:bg-[#060606] bg-slate-200 cursor-pointer p-4 rounded-lg"
           onClick={handleSetLimit}
         >
-          <p className="text-md text-white mb-4 text-black dark:text-white">
+          <p className="text-md mb-4 text-black dark:text-white">
             {video.statistics
               ? `${Number.parseInt(video.statistics.viewCount).toLocaleString(
                   "id-ID"
