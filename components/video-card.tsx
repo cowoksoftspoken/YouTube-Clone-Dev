@@ -9,6 +9,7 @@ interface Video {
     thumbnails: { medium: { url: string }; default: { url: string } };
     channelTitle: string;
     publishedAt: string;
+    resourceId: { videoId: string };
   };
   contentDetails?: { duration: string };
   statistics?: { viewCount: string };
@@ -19,8 +20,17 @@ interface VideoCardProps {
   compact?: boolean;
 }
 
+let videoId: string | null = null;
+
 export default function VideoCard({ video, compact = false }: VideoCardProps) {
-  const videoId = typeof video.id === "string" ? video.id : video.id.videoId;
+  if (video.snippet?.resourceId?.videoId) {
+    videoId = video.snippet.resourceId.videoId;
+  } else if (typeof video.id === "string") {
+    videoId = video.id;
+  } else if (video.id?.videoId) {
+    videoId = video.id.videoId;
+  }
+
   const isWindowAvailable = typeof window !== "undefined";
   const isMobile =
     isWindowAvailable && window.matchMedia("(max-width: 640px)").matches;
@@ -40,8 +50,10 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
           <Image
             src={
               compact
-                ? video.snippet.thumbnails.default.url
-                : video.snippet.thumbnails.medium.url
+                ? video.snippet.thumbnails?.default?.url
+                : video.snippet.thumbnails?.medium?.url
+                ? video.snippet.thumbnails.medium.url
+                : "/placeholder.svg"
             }
             alt={video.snippet.title}
             width={compact ? 190 : isMobile ? 500 : 320}

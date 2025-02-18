@@ -214,3 +214,76 @@ export async function fetchChannelAbout(channelId: string) {
     throw error;
   }
 }
+
+export async function fetchPlaylistDetails(playlistId: string) {
+  const params = new URLSearchParams({
+    part: "snippet,contentDetails",
+    id: playlistId,
+    key: API_KEY!,
+  });
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlists?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch playlist details: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    if (!data.items || data.items.length === 0) {
+      throw new Error("Playlist not found");
+    }
+
+    return data.items[0];
+  } catch (error) {
+    console.error("Error fetching playlist details:", error);
+    throw error;
+  }
+}
+
+export async function fetchPlaylistVideos(
+  playlistId: string,
+  pageToken: string | null = null
+) {
+  const params = new URLSearchParams({
+    part: "snippet",
+    playlistId: playlistId,
+    maxResults: "50",
+    key: API_KEY!,
+  });
+
+  if (pageToken) {
+    params.append("pageToken", pageToken);
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlistItems?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch playlist videos: ${response.statusText}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching playlist videos:", error);
+    throw error;
+  }
+}

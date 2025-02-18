@@ -167,6 +167,7 @@ export default function VideoPlayer({
           </p>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            className="prose dark:prose-invert prose-p:m-0 prose-h1:m-0 prose-h2:m-0"
             children={displayText(video.snippet.description, limit)}
           />
         </div>
