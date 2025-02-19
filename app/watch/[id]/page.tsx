@@ -13,7 +13,7 @@ export default async function WatchPage({
   const channelData = await fetchChannelDetails(videoData.snippet.channelId);
 
   return (
-    <div className="md:max-w-7xl max-w-full mx-auto md:px-4 px-2 py-3">
+    <div className="md:max-w-7xl max-w-[100vw] mx-auto md:px-4 px-0 py-3">
       <Suspense fallback={<LoadingSkeleton />}>
         <VideoPlayer
           initialVideo={videoData}
