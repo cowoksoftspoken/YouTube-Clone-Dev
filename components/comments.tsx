@@ -300,7 +300,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                           <div className="flex items-center space-x-4 mt-2">
                             <Button
                               variant="ghost"
-                              className="flex items-center gap-3"
+                              className="flex items-center gap-3 p-0"
                               size="sm"
                             >
                               <ThumbsUp className="h-4 w-4" />{" "}
