@@ -15,12 +15,14 @@ import {
   Download,
   CircleCheck,
 } from "lucide-react";
+import Comments from "@/components/comments";
 
 interface VideoDetails {
   id: string;
   snippet: {
     title: string;
     description: string;
+    channelId: string;
     channelTitle: string;
     publishedAt: string;
   };
@@ -190,6 +192,12 @@ export default function VideoPlayer({
             remarkPlugins={[remarkGfm]}
             className="prose dark:prose-invert prose-p:m-0 prose-h1:m-0 prose-h2:m-0 prose-h3:m-0 prose-h4:m-0 prose-h5:m-0 prose-h6:m-0 prose-a:m-0 prose-ul:m-0 prose-li:m-0 prose-ol:m-0 overflow-hidden word-break break-words"
             children={displayText(video.snippet.description, limit)}
+          />
+        </div>
+        <div className="mt-8">
+          <Comments
+            videoId={videoId}
+            authorChannelId={video.snippet.channelId}
           />
         </div>
       </div>

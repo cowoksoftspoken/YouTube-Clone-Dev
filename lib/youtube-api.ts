@@ -287,3 +287,77 @@ export async function fetchPlaylistVideos(
     throw error;
   }
 }
+
+export async function fetchComments(
+  videoId: string,
+  pageToken: string | null = null
+) {
+  const params = new URLSearchParams({
+    part: "snippet",
+    videoId: videoId,
+    maxResults: "20",
+    key: API_KEY!,
+  });
+
+  if (pageToken) {
+    params.append("pageToken", pageToken);
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/commentThreads?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch comments: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+}
+
+export async function fetchCommentReplies(
+  commentId: string,
+  pageToken: string | null = null
+) {
+  const params = new URLSearchParams({
+    part: "snippet",
+    parentId: commentId,
+    maxResults: "20",
+    key: API_KEY!,
+  });
+
+  if (pageToken) {
+    params.append("pageToken", pageToken);
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/comments?${params}`,
+      {
+        next: {
+          revalidate: 3600,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch comment replies: ${response.statusText}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching comment replies:", error);
+    throw error;
+  }
+}
