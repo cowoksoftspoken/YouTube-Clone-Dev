@@ -19,6 +19,7 @@ import {
   Shirt,
   Trophy,
   X,
+  Youtube,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -88,7 +89,10 @@ export default function Sidebar({
         )}
       >
         <div className="flex justify-between items-center p-4 md:hidden">
-          <span className="font-semibold">Youtube</span>
+          <span className="font-semibold flex gap-2 items-center">
+            <Youtube className="h-6 w-6 text-red-500" />
+            Youtube
+          </span>
           <Button variant="ghost" size="icon" onClick={onCloseAction}>
             <X className="h-5 w-5" />
             <span className="sr-only">Close sidebar</span>
@@ -118,7 +122,7 @@ export default function Sidebar({
               <Link
                 key={item.href}
                 href={item.href!}
-                className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272829]"
                 onClick={onCloseAction}
               >
                 {item.icon && <item.icon className="h-5 w-5" />}

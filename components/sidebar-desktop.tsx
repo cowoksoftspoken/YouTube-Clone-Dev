@@ -54,7 +54,7 @@ export default function SidebarDesktop({ className }: { className?: string }) {
         )}
         data-id="sidebar-desktop"
       >
-        <div className="space-y-4 py-4 pb-20">
+        <div className="space-y-4 py-4 pb-20 w-full">
           {sidebarItems.map((item, index) => {
             if (item.divider) {
               return (
@@ -78,7 +78,7 @@ export default function SidebarDesktop({ className }: { className?: string }) {
               <Link
                 key={item.href}
                 href={item.href!}
-                className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="flex items-center w-full space-x-3 rounded-lg px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272829]"
               >
                 {item.icon && <item.icon className="h-5 w-5" />}
                 <span className="text-sm font-medium">{item.label}</span>
