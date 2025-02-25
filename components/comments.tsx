@@ -138,7 +138,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
 
   useEffect(() => {
     loadComments();
-  }, [videoId]);
+  }, []);
 
   useEffect(() => {
     if (inView && nextPageToken) {
@@ -172,10 +172,12 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
   const AuthorName = ({
     name,
     channelId,
+    className,
   }: {
     name: string;
     channelId: string;
     isReply?: boolean;
+    className?: string;
   }) => {
     const isAuthor = channelId === authorChannelId;
     const isVerified = verifiedChannels[channelId];
@@ -186,7 +188,8 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
           className={cn(
             "font-semibold",
             isAuthor &&
-              "bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full text-sm"
+              "bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full text-sm",
+            className
           )}
         >
           <Link href={`/channel/${channelId}`}>{name}</Link>
@@ -196,14 +199,29 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
     );
   };
 
-  const CommentCard = ({ comment }: { comment: Comment }) => {
+  const CommentCard = ({
+    comment,
+    isRandom,
+  }: {
+    comment: Comment;
+    isRandom?: boolean;
+  }) => {
     const [isRepliesExpanded, setIsRepliesExpanded] = useState(false);
 
     return (
-      <div className="bg-card p-4 rounded-lg shadow-md space-y-4">
+      <div
+        className={`rounded-lg shadow-md space-y-4 w-full ${
+          isRandom ? "bg-[#272829] p-4" : "bg-card p-2"
+        }`}
+      >
         <div className="flex items-start space-x-4">
           <Avatar>
             <AvatarImage
+              srcSet={
+                comment.snippet.topLevelComment.snippet.authorProfileImageUrl
+              }
+              decoding="async"
+              loading="lazy"
               src={
                 comment.snippet.topLevelComment.snippet.authorProfileImageUrl
               }
@@ -213,19 +231,31 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <AuthorName
-              name={comment.snippet.topLevelComment.snippet.authorDisplayName}
-              channelId={
-                comment.snippet.topLevelComment.snippet.authorChannelId.value
-              }
-            />
+            <div className="flex items-center space-x-2">
+              <AuthorName
+                name={comment.snippet.topLevelComment.snippet.authorDisplayName}
+                className="text-sm"
+                channelId={
+                  comment.snippet.topLevelComment.snippet.authorChannelId.value
+                }
+              />
+              <span className="text-xs text-muted-foreground">
+                {formatPublishedDate(
+                  new Date(comment.snippet.topLevelComment.snippet.publishedAt)
+                )}
+              </span>
+            </div>
             <p
-              className="mt-1"
+              className="mt-1 text-sm"
               dangerouslySetInnerHTML={{
                 __html: comment.snippet.topLevelComment.snippet.textDisplay,
               }}
             />
-            <div className="flex items-center space-x-4 mt-2">
+            <div
+              className={`flex items-center space-x-4 mt-2 ${
+                isRandom ? "hidden" : ""
+              }`}
+            >
               <Button
                 variant="ghost"
                 className="flex items-center gap-3 p-0"
@@ -243,7 +273,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
             </div>
           </div>
         </div>
-        {comment.snippet.totalReplyCount > 0 && (
+        {comment.snippet.totalReplyCount > 0 && !isRandom && (
           <div className="ml-10">
             <Button
               variant="link"
@@ -276,7 +306,12 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                 {replies[comment.id].map((reply) => (
                   <div key={reply.id} className="flex space-x-4">
                     <Avatar>
-                      <AvatarImage src={reply.snippet.authorProfileImageUrl} />
+                      <AvatarImage
+                        loading="lazy"
+                        decoding="async"
+                        srcSet={reply.snippet.authorProfileImageUrl}
+                        src={reply.snippet.authorProfileImageUrl}
+                      />
                       <AvatarFallback>
                         {reply.snippet.authorDisplayName[0]}
                       </AvatarFallback>
@@ -323,7 +358,12 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
   };
 
   if (loading && comments.length === 0) {
-    return <span className="loader">Loading comments...</span>;
+    return (
+      <div className="flex items-center justify-center h-full">
+        <span className="loader"></span>
+        <span className="sr-only">Loading comments...</span>
+      </div>
+    );
   }
 
   return (
@@ -337,11 +377,31 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="fixed inset-0 bg-background z-50 overflow-hidden"
+                className="fixed inset-0 dark:bg-[#4d4e4e] bg-slate-100 shadow-md z-50 overflow-hidden"
               >
-                <div className="h-full flex flex-col">
+                <div className="h-full bg-black flex flex-col">
                   <div className="flex justify-between items-center p-4 border-b">
-                    <h2 className="text-xl font-bold">Comments</h2>
+                    <div className="text-md font-bold flex items-center gap-2">
+                      {" "}
+                      {comments.length} Comments
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-md"
+                      >
+                        <svg
+                          height="48"
+                          viewBox="0 0 48 48"
+                          className="h-4 w-4 text-black dark:text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                        >
+                          <path d="M6 36h12v-4h-12v4zm0-24v4h36v-4h-36zm0 14h24v-4h-24v4z" />
+                          <path d="M0 0h48v48h-48z" fill="none" />
+                        </svg>
+                        Sort by
+                      </Button>
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -350,7 +410,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                       <X className="h-6 w-6" />
                     </Button>
                   </div>
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  <div className="flex-1 bg-background overflow-y-auto p-4 space-y-4">
                     {comments.map((comment, i) => (
                       <CommentCard key={i} comment={comment} />
                     ))}
@@ -365,7 +425,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
               className="mt-4 cursor-pointer"
               onClick={() => setIsCommentsOpen(true)}
             >
-              <CommentCard comment={comments[randomCommentIndex]} />
+              <CommentCard comment={comments[randomCommentIndex]} isRandom />
             </div>
           )}
         </>
@@ -403,6 +463,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                         comment.snippet.topLevelComment.snippet
                           .authorProfileImageUrl
                       }
+                      decoding="async"
                       loading="lazy"
                     />
                     <AvatarFallback>
@@ -488,6 +549,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                           <div key={i} className="flex space-x-4">
                             <Avatar>
                               <AvatarImage
+                                decoding="async"
                                 src={reply.snippet.authorProfileImageUrl}
                               />
                               <AvatarFallback>

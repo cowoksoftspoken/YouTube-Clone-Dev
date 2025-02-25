@@ -58,11 +58,11 @@ export default function VideoPlayer({
   videoId,
 }: VideoPlayerProps) {
   const [video] = useState<VideoDetails>(initialVideo);
-  const [limit, setLimit] = useState<number>(500);
+  const [limit, setLimit] = useState<number>(50);
   if (typeof window !== "undefined") document.title = video.snippet.title;
 
   const handleSetLimit = () => {
-    setLimit(limit === 500 ? video.snippet.description.length : 500);
+    setLimit(limit === 50 ? video.snippet.description.length : 50);
   };
 
   const displayText = (text: string, limit: number) => {
@@ -177,7 +177,7 @@ export default function VideoPlayer({
           </div>
         </div>
         <div
-          className="mt-4 text-sm whitespace-pre-wrap dark:bg-[#060606] bg-slate-200 cursor-pointer p-4 rounded-lg"
+          className="mt-4 text-sm whitespace-pre-wrap dark:bg-[#272829] bg-slate-200 cursor-pointer p-4 rounded-lg"
           onClick={handleSetLimit}
         >
           <p className="text-md mb-4 text-black dark:text-white">
@@ -194,7 +194,7 @@ export default function VideoPlayer({
             children={displayText(video.snippet.description, limit)}
           />
         </div>
-        <div className="mt-8">
+        <div className="mt-4">
           <Comments
             videoId={videoId}
             authorChannelId={video.snippet.channelId}

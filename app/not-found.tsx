@@ -1,17 +1,40 @@
-import Image from "next/image";
+"use client";
+
+import { CSSProperties } from "react";
+import { useState } from "react";
+import FuzzyText from "@/utils/FuzzyText";
 
 export default function NotFound() {
+  const [hoverIntensity] = useState(0.5);
+  const [enableHover] = useState(true);
+
   return (
-    <div className="flex justify-center flex-col items-center h-full">
-      <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
-      <p className="text-lg">The page you are looking for does not exist.</p>
-      <Image
-        src="/not-found.avif"
-        className="rounded-full mt-4 w-20 h-20"
-        alt="404"
-        width={400}
-        height={400}
-      />
+    <div style={styles.container}>
+      <FuzzyText
+        baseIntensity={0.2}
+        hoverIntensity={hoverIntensity}
+        enableHover={enableHover}
+      >
+        404
+      </FuzzyText>
+      <p style={styles.text}>Oops! Halaman yang kamu cari tidak ditemukan.</p>
     </div>
   );
 }
+
+const styles: { [key: string]: CSSProperties } = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+    color: "#fff",
+    fontFamily: "Arial, sans-serif",
+  },
+  text: {
+    marginTop: "10px",
+    fontSize: "18px",
+    opacity: 0.7,
+  },
+};

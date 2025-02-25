@@ -24,7 +24,7 @@ export default function ChannelAbout({ channel }: ChannelAboutProps) {
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-4">About</h2>
-      <div className="bg-card p-6 rounded-lg">
+      <div className="bg-card p-2 rounded-lg">
         <div className="mb-4 max-w-full prose dark:prose-invert prose-p:m-0 prose-h1:m-0 prose-h2:m-0 prose-h3:m-0 prose-h4:m-0 prose-h5:m-0 prose-h6:m-0 prose-a:m-0 prose-ul:m-0 prose-li:m-0 prose-ol:m-0 overflow-hidden word-break break-words">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {channel.snippet.description}

@@ -52,7 +52,7 @@ export default function SidebarDesktop({ className }: { className?: string }) {
           "fixed top-0 left-0 bottom-0 z-50 w-64 bg-background transition-transform duration-300 ease-in-out transform md:translate-x-0 md:static h-full overflow-y-auto md:flex hidden",
           className
         )}
-        data-id="sidebar-desktop"
+        id={btoa("sidebar-desktop")}
       >
         <div className="space-y-4 py-4 pb-20 w-full">
           {sidebarItems.map((item, index) => {
