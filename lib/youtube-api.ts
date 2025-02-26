@@ -182,6 +182,32 @@ export async function fetchChannelPlaylists(
   }
 }
 
+export async function fetchSearchSuggestions(query: string): Promise<string[]> {
+  const params = new URLSearchParams({
+    part: "snippet",
+    type: "search",
+    q: query,
+    maxResults: "10",
+    key: API_KEY!,
+  });
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?${params}`
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch search suggestions: ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return data.items.map((item: any) => item.snippet.title);
+  } catch (error) {
+    console.error("Error fetching search suggestions:", error);
+    return [];
+  }
+}
+
 export async function fetchChannelAbout(channelId: string) {
   const params = new URLSearchParams({
     part: "snippet,statistics,brandingSettings",
