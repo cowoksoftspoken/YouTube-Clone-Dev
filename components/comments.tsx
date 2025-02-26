@@ -211,7 +211,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
     return (
       <div
         className={`rounded-lg shadow-md space-y-4 w-full ${
-          isRandom ? "bg-[#272829] p-4" : "bg-card p-2"
+          isRandom ? "dark:bg-[#272829] p-4 bg-slate-100" : "bg-card p-2"
         }`}
       >
         <div className="flex items-start space-x-4">
@@ -248,7 +248,12 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
             <p
               className="mt-1 text-sm"
               dangerouslySetInnerHTML={{
-                __html: comment.snippet.topLevelComment.snippet.textDisplay,
+                __html: isRandom
+                  ? comment.snippet.topLevelComment.snippet.textDisplay.slice(
+                      0,
+                      150
+                    ) + "..."
+                  : comment.snippet.topLevelComment.snippet.textDisplay,
               }}
             />
             <div
@@ -379,7 +384,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="fixed inset-0 dark:bg-[#4d4e4e] bg-slate-100 shadow-md z-50 overflow-hidden"
               >
-                <div className="h-full bg-black flex flex-col">
+                <div className="h-full dark:bg-background bg-white flex flex-col">
                   <div className="flex justify-between items-center p-4 border-b">
                     <div className="text-md font-bold flex items-center gap-2">
                       {" "}

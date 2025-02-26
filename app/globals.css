@@ -105,7 +105,7 @@
   box-shadow: 0 0 0 0 #fff;
 }
 
-aside[data-id="sidebar-desktop"]::-webkit-scrollbar {
+aside#c2lkZWJhci1kZXNrdG9w::-webkit-scrollbar {
   width: 1.5rem;
 }
 
