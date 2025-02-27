@@ -1,6 +1,8 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
 import { formatViews, formatPublishedDate, formatDuration } from "@/lib/utils";
+import { useRef, useEffect, useState } from "react";
 
 interface Video {
   id: { videoId: string } | string;
@@ -31,9 +33,43 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
     videoId = video.id.videoId;
   }
 
-  const isWindowAvailable = typeof window !== "undefined";
-  const isMobile =
-    isWindowAvailable && window.matchMedia("(max-width: 640px)").matches;
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 600);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = compact
+      ? video.snippet.thumbnails?.default?.url
+      : video.snippet.thumbnails?.medium?.url
+      ? video.snippet.thumbnails.medium.url
+      : "/placeholder.svg";
+
+    img.onload = () => {
+      const aspectRatio = img.width / img.height;
+      const width = compact ? 190 : isMobile ? 280 : 320;
+      const height = width / aspectRatio;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+  }, [video, compact, isMobile]);
 
   return (
     <Link href={`/watch/${videoId}`}>
@@ -47,21 +83,9 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             compact ? "w-40 flex-shrink-0 mb-2" : "aspect-video"
           }`}
         >
-          <Image
-            src={
-              compact
-                ? video.snippet.thumbnails?.default?.url
-                : video.snippet.thumbnails?.medium?.url
-                ? video.snippet.thumbnails.medium.url
-                : "/placeholder.svg"
-            }
-            alt={video.snippet.title}
-            width={compact ? 190 : isMobile ? 500 : 320}
-            height={compact ? 90 : 180}
-            priority
-            quality={compact ? 70 : 100}
-            layout="responsive"
-            className="object-cover transition-transform group-hover:scale-110"
+          <canvas
+            ref={canvasRef}
+            className="object-cover transition-transform group-hover:scale-110 w-full"
           />
           {video.contentDetails && (
             <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 rounded">

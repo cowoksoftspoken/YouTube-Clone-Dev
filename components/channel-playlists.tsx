@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import OptimizedImage from "@/lib/OptimizedImage";
 
 interface Playlist {
   id: string;
@@ -29,13 +29,11 @@ export default function ChannelPlaylists({ playlists }: ChannelPlaylistsProps) {
           <Link key={playlist.id} href={`/playlist/${playlist.id}`}>
             <div className="group cursor-pointer">
               <div className="relative aspect-video overflow-hidden rounded-lg">
-                <Image
+                <OptimizedImage
                   src={
                     playlist.snippet.thumbnails.medium.url || "/placeholder.svg"
                   }
                   alt={playlist.snippet.title}
-                  layout="fill"
-                  objectFit="cover"
                   className="transition-transform group-hover:scale-110"
                 />
                 <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded">

@@ -316,6 +316,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                         decoding="async"
                         srcSet={reply.snippet.authorProfileImageUrl}
                         src={reply.snippet.authorProfileImageUrl}
+                        alt={reply.snippet.authorDisplayName}
                       />
                       <AvatarFallback>
                         {reply.snippet.authorDisplayName[0]}

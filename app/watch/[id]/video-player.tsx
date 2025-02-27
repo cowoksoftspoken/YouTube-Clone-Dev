@@ -5,7 +5,6 @@ import { formatViews, formatPublishedDate } from "@/lib/utils";
 import RelatedVideos from "@/components/related-videos";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Share2Icon,
@@ -16,6 +15,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import Comments from "@/components/comments";
+import OptimizedImage from "@/lib/OptimizedImage";
 
 interface VideoDetails {
   id: string;
@@ -104,18 +104,11 @@ export default function VideoPlayer({
           {video.snippet.title}
         </h1>
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
-          <div className="flex items-center justify-between space-x-4 w-full md:w-auto">
+          <div className="flex items-center justify-between space-x-4 w-full md:w-auto w-full">
             <div className="flex gap-2 items">
-              <Image
-                src={
-                  channelDetails.snippet.thumbnails.default.url ||
-                  "/placeholder.svg"
-                }
+              <OptimizedImage
+                src={channelDetails.snippet.thumbnails.default.url}
                 alt={channelDetails.snippet.title}
-                width={40}
-                priority
-                quality={100}
-                height={40}
                 className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
               />
               <Link href={`/channel/${channelDetails.id}`}>
@@ -124,7 +117,7 @@ export default function VideoPlayer({
                   title={channelDetails.snippet.title}
                 >
                   {video.snippet.channelTitle.length > 13
-                    ? video.snippet.channelTitle.slice(0, 13) + "..."
+                    ? video.snippet.channelTitle.slice(0, 13) + ".."
                     : video.snippet.channelTitle}
                   {isVerified && (
                     <CircleCheck

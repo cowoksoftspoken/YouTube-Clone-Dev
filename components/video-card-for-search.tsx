@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatViews, formatPublishedDate, formatDuration } from "@/lib/utils";
+import OptimizedImage from "@/lib/OptimizedImage";
 
 interface Video {
   id: { videoId: string } | string;
@@ -25,12 +26,10 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
     <Link href={`/watch/${videoId}`} className="block">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-12">
         <div className="relative overflow-hidden rounded-lg sm:col-span-4 aspect-video">
-          <Image
-            src={video.snippet.thumbnails.medium.url || "/placeholder.svg"}
+          <OptimizedImage
+            src={video.snippet.thumbnails.medium.url}
             alt={video.snippet.title}
-            layout="fill"
-            objectFit="cover"
-            className="transition-transform group-hover:scale-110"
+            className="transition-transform w-full group-hover:scale-110"
           />
         </div>
         <div className="sm:col-span-8">

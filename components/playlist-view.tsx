@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VideoCard from "@/components/video-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchPlaylistDetails, fetchPlaylistVideos } from "@/lib/youtube-api";
-import { formatViews } from "@/lib/utils";
+import OptimizedImage from "@/lib/OptimizedImage";
 
 interface PlaylistViewProps {
   playlistId: string;
@@ -60,11 +59,9 @@ export default function PlaylistView({ playlistId }: PlaylistViewProps) {
     <div className="flex flex-col md:flex-row gap-8">
       <div className="md:w-1/3">
         <div className="relative aspect-video mb-4">
-          <Image
+          <OptimizedImage
             src={playlist.snippet.thumbnails.medium.url || "/placeholder.svg"}
             alt={playlist.snippet.title}
-            layout="fill"
-            objectFit="cover"
             className="rounded-lg"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 shadow-md flex items-center justify-center">

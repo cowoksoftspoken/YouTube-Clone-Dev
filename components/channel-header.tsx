@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { formatViews } from "@/lib/utils";
+import OptimizedImage from "@/lib/OptimizedImage";
 
 interface ChannelHeaderProps {
   channel: {
@@ -34,29 +35,21 @@ export default function ChannelHeader({ channel }: ChannelHeaderProps) {
         aria-disabled="true"
         className="bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden mb-4"
       >
-        <Image
+        <img
           src="/background-default.avif"
-          alt="default"
-          layout="responsive"
-          width={384}
-          height={80}
-          priority
-          quality={100}
+          decoding="async"
+          loading="lazy"
           className="w-full max-h-[120px] md:max-h-[200px] object-cover"
         />
       </div>
       <div className="flex items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 md:mb-8 mb-4">
-        <Image
-          src={channel.snippet.thumbnails.medium.url || "/placeholder.svg"}
+        <OptimizedImage
+          src={channel.snippet.thumbnails.medium.url}
           alt={channel.snippet.title}
-          width={120}
-          height={120}
-          priority
-          quality={100}
           className="rounded-full w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
         />
         <div className="flex-1 ml-3">
-          <h1 className="text-xl md:text-2xl font-bold">
+          <h1 className="text-base md:text-2xl font-bold">
             {channel.snippet.title}
           </h1>
           <div className="text-sm text-muted-foreground mt-1 flex">
