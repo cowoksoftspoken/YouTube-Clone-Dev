@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { formatViews } from "@/lib/utils";
-import OptimizedImage from "@/lib/OptimizedImage";
+import { useEffect, useState } from "react";
 
 interface ChannelHeaderProps {
   channel: {
@@ -27,6 +26,22 @@ interface ChannelHeaderProps {
 export default function ChannelHeader({ channel }: ChannelHeaderProps) {
   const displayDescription = (text: string, limit: number) =>
     text.length > limit ? text.slice(0, limit) + "..." : text;
+  const [blobImage, setBlobImage] = useState<string>("");
+
+  useEffect(() => {
+    const convertToBlob = async (url: string) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setBlobImage(blobUrl);
+    };
+
+    convertToBlob(channel.snippet.thumbnails.medium.url);
+
+    return () => {
+      URL.revokeObjectURL(blobImage);
+    };
+  }, [channel.snippet.thumbnails.medium.url]);
 
   return (
     <>
@@ -43,9 +58,10 @@ export default function ChannelHeader({ channel }: ChannelHeaderProps) {
         />
       </div>
       <div className="flex items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 md:mb-8 mb-4">
-        <OptimizedImage
-          src={channel.snippet.thumbnails.medium.url}
+        <img
+          src={blobImage || channel.snippet.thumbnails.medium.url}
           alt={channel.snippet.title}
+          loading="eager"
           className="rounded-full w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
         />
         <div className="flex-1 ml-3">

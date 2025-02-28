@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatViews, formatPublishedDate } from "@/lib/utils";
 import RelatedVideos from "@/components/related-videos";
 import ReactMarkdown from "react-markdown";
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Comments from "@/components/comments";
 import OptimizedImage from "@/lib/OptimizedImage";
+import { blob } from "stream/consumers";
 
 interface VideoDetails {
   id: string;
@@ -59,6 +60,7 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const [video] = useState<VideoDetails>(initialVideo);
   const [limit, setLimit] = useState<number>(50);
+  const [blobImage, setBlobImage] = useState<string>("");
   if (typeof window !== "undefined") document.title = video.snippet.title;
 
   const handleSetLimit = () => {
@@ -83,6 +85,21 @@ export default function VideoPlayer({
       .catch((error) => console.log("Error sharing:", error));
   };
 
+  useEffect(() => {
+    const convertToBlob = async (url: string) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setBlobImage(blobUrl);
+    };
+
+    convertToBlob(channelDetails.snippet.thumbnails.default.url);
+
+    return () => {
+      URL.revokeObjectURL(blobImage);
+    };
+  }, [channelDetails.snippet.thumbnails.default.url]);
+
   const isVerified =
     parseInt(channelDetails.statistics.subscriberCount) > 100000 &&
     channelDetails.snippet.customUrl;
@@ -106,9 +123,10 @@ export default function VideoPlayer({
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
           <div className="flex items-center justify-between space-x-4 w-full md:w-auto w-full">
             <div className="flex gap-2 items">
-              <OptimizedImage
-                src={channelDetails.snippet.thumbnails.default.url}
+              <img
+                src={blobImage || channelDetails.snippet.thumbnails.default.url}
                 alt={channelDetails.snippet.title}
+                loading="eager"
                 className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
               />
               <Link href={`/channel/${channelDetails.id}`}>

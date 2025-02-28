@@ -29,6 +29,7 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
           <OptimizedImage
             src={video.snippet.thumbnails.medium.url}
             alt={video.snippet.title}
+            loading="eager"
             className="transition-transform w-full group-hover:scale-110"
           />
         </div>
