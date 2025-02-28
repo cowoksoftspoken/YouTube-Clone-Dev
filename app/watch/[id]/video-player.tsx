@@ -126,7 +126,8 @@ export default function VideoPlayer({
               <img
                 src={blobImage || channelDetails.snippet.thumbnails.default.url}
                 alt={channelDetails.snippet.title}
-                loading="eager"
+                loading="lazy"
+                decoding="async"
                 className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
               />
               <Link href={`/channel/${channelDetails.id}`}>
