@@ -8,6 +8,9 @@ export async function GET(req: NextRequest) {
     ? parseInt(searchParams.get("width") as string)
     : 320;
   const format = searchParams.get("format") || "webp";
+  const quality = searchParams.get("quality")
+    ? parseInt(searchParams.get("quality") as string)
+    : 100;
 
   if (!imageUrl) {
     return NextResponse.json(
@@ -20,14 +23,23 @@ export async function GET(req: NextRequest) {
     const response = await fetch(imageUrl);
     const buffer = await response.arrayBuffer();
 
-    let image = sharp(Buffer.from(buffer)).resize(width);
+    let image = sharp(Buffer.from(buffer)).resize(width, null, {
+      kernel: "lanczos3",
+    });
 
     if (format === "webp") {
-      image = image.toFormat("webp");
-    } else if (format === "jpeg") {
-      image = image.toFormat("jpeg");
+      image = image.toFormat("webp", { quality, nearLossless: true });
+    } else if (format === "jpeg" || format === "jpg") {
+      image = image.toFormat("jpeg", {
+        quality,
+        progressive: true,
+        mozjpeg: true,
+      });
+    } else if (format === "png") {
+      image = image.toFormat("png", { quality, palette: true });
     }
 
+    image = image.blur(0.3);
     const optimizedImage = await image.toBuffer();
 
     return new NextResponse(optimizedImage, {
