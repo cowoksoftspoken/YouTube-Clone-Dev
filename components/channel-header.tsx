@@ -61,7 +61,6 @@ export default function ChannelHeader({ channel }: ChannelHeaderProps) {
         <img
           src={blobImage || channel.snippet.thumbnails.medium.url}
           alt={channel.snippet.title}
-          loading="eager"
           className="rounded-full w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
         />
         <div className="flex-1 ml-3">
