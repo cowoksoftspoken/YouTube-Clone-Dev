@@ -107,12 +107,19 @@ export default function VideoPlayer({
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
           <div className="flex items-center justify-between space-x-4 w-full md:w-auto w-full">
             <div className="flex gap-2 items">
-              <img
-                src={channelDetails.snippet.thumbnails.default.url}
-                alt={channelDetails.snippet.title}
-                loading="eager"
-                className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
-              />
+              <div
+                className="layer rounded-full overflow-hidden"
+                style={{ width: "40px", height: "40px", pointerEvents: "none" }}
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                <img
+                  src={channelDetails.snippet.thumbnails.default.url}
+                  alt={channelDetails.snippet.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
+                />
+              </div>
               <Link href={`/channel/${channelDetails.id}`}>
                 <h2
                   className="font-semibold flex items-center cursor-pointer gap-1"
