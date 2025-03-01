@@ -111,7 +111,7 @@ export async function fetchVideoDetails(videoId: string) {
     }
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch video details");
+    throw new Error(`Failed to fetch video details: ${response.statusText}`);
   }
 
   const data = await response.json();
@@ -138,7 +138,7 @@ export async function searchVideos(
     `https://www.googleapis.com/youtube/v3/search?${params}`
   );
   if (!response.ok) {
-    throw new Error("Failed to search videos");
+    throw new Error(`"Failed to search videos" ${response.statusText}`);
   }
 
   return response.json();

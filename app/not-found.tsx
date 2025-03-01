@@ -36,5 +36,6 @@ const styles: { [key: string]: CSSProperties } = {
     marginTop: "10px",
     fontSize: "18px",
     opacity: 0.7,
+    textAlign: "center",
   },
 };

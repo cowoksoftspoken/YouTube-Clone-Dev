@@ -60,7 +60,6 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const [video] = useState<VideoDetails>(initialVideo);
   const [limit, setLimit] = useState<number>(50);
-  const [blobImage, setBlobImage] = useState<string>("");
   if (typeof window !== "undefined") document.title = video.snippet.title;
 
   const handleSetLimit = () => {
@@ -85,21 +84,6 @@ export default function VideoPlayer({
       .catch((error) => console.log("Error sharing:", error));
   };
 
-  useEffect(() => {
-    const convertToBlob = async (url: string) => {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      setBlobImage(blobUrl);
-    };
-
-    convertToBlob(channelDetails.snippet.thumbnails.default.url);
-
-    return () => {
-      URL.revokeObjectURL(blobImage);
-    };
-  }, [channelDetails.snippet.thumbnails.default.url]);
-
   const isVerified =
     parseInt(channelDetails.statistics.subscriberCount) > 100000 &&
     channelDetails.snippet.customUrl;
@@ -123,13 +107,19 @@ export default function VideoPlayer({
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
           <div className="flex items-center justify-between space-x-4 w-full md:w-auto w-full">
             <div className="flex gap-2 items">
-              <img
-                src={blobImage || channelDetails.snippet.thumbnails.default.url}
-                alt={channelDetails.snippet.title}
-                loading="lazy"
-                decoding="async"
-                className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
-              />
+              <div
+                className="layer rounded-full overflow-hidden z-10"
+                style={{ width: "40px", height: "40px", pointerEvents: "none" }}
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                <img
+                  src={channelDetails.snippet.thumbnails.default.url}
+                  alt={channelDetails.snippet.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="!rounded-full w-[40px] h-[40px] flex-shrink-0"
+                />
+              </div>
               <Link href={`/channel/${channelDetails.id}`}>
                 <h2
                   className="font-semibold flex items-center cursor-pointer gap-1"
@@ -141,7 +131,7 @@ export default function VideoPlayer({
                   {isVerified && (
                     <CircleCheck
                       color="currentColor"
-                      className="h-4 w-4 text-gray-500 rounded-full"
+                      className="h-4 w-4 text-indigo-500 rounded-full"
                     />
                   )}
                 </h2>
