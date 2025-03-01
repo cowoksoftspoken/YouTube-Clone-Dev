@@ -41,19 +41,12 @@ export default function ChannelHeader({ channel }: ChannelHeaderProps) {
         />
       </div>
       <div className="flex items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 md:mb-8 mb-4">
-        <div
-          className="layer rounded-full overflow-hidden z-10 w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
-          style={{ pointerEvents: "none" }}
-          onContextMenu={(e) => e.preventDefault()}
-        >
-          <img
-            src={channel.snippet.thumbnails.medium.url}
-            alt={channel.snippet.title}
-            loading="lazy"
-            decoding="async"
-            className="rounded-full w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
-          />
-        </div>
+        <img
+          src={channel.snippet.thumbnails.medium.url}
+          alt={channel.snippet.title}
+          loading="eager"
+          className="rounded-full w-[75px] h-[75px] md:w-[120px] md:h-[120px]"
+        />
         <div className="flex-1 ml-3">
           <h1 className="text-base md:text-2xl font-bold">
             {channel.snippet.title}
