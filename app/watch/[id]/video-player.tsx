@@ -15,8 +15,12 @@ import {
   CircleCheck,
 } from "lucide-react";
 import Comments from "@/components/comments";
-import OptimizedImage from "@/lib/OptimizedImage";
-import { blob } from "stream/consumers";
+import {
+  subscribeChannel,
+  checkSubscription,
+  unsubscribeChannel,
+} from "@/lib/youtube-api";
+import { useSession } from "next-auth/react";
 
 interface VideoDetails {
   id: string;
@@ -59,7 +63,10 @@ export default function VideoPlayer({
   videoId,
 }: VideoPlayerProps) {
   const [video] = useState<VideoDetails>(initialVideo);
+  const { data: session } = useSession();
   const [limit, setLimit] = useState<number>(50);
+  const [isSubs, setIsSubs] = useState<boolean>(false);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   if (typeof window !== "undefined") document.title = video.snippet.title;
 
   const handleSetLimit = () => {
@@ -82,6 +89,43 @@ export default function VideoPlayer({
       })
       .then(() => console.log("Successful share"))
       .catch((error) => console.log("Error sharing:", error));
+  };
+
+  useEffect(() => {
+    if (session && session.accessToken) {
+      checkSubscription(channelDetails.id, session.accessToken).then(
+        (subId) => {
+          if (subId) {
+            setIsSubs(true);
+            setSubscriptionId(subId);
+          }
+        }
+      );
+    }
+  }, [session, channelDetails.id]);
+
+  const handleSubscribeToggle = async (): Promise<void> => {
+    if (!session || !session.accessToken) return;
+
+    if (isSubs && subscriptionId) {
+      const success = await unsubscribeChannel(
+        subscriptionId,
+        session.accessToken
+      );
+      if (success) {
+        setIsSubs(false);
+        setSubscriptionId(null);
+      }
+    } else {
+      const newSubId = await subscribeChannel(
+        channelDetails.id,
+        session.accessToken
+      );
+      if (newSubId) {
+        setIsSubs(true);
+        setSubscriptionId(newSubId);
+      }
+    }
   };
 
   const isVerified =
@@ -145,10 +189,17 @@ export default function VideoPlayer({
             </div>
             <button
               type="button"
-              title={`Subscribe to ${video.snippet.channelTitle}`}
-              className="bg-[#060606] dark:bg-white text-white dark:text-black px-4 py-2 rounded-full flex items-center space-x-2 text-sm dark:text-black text-white"
+              title={`${isSubs ? "Unsubscribe" : "Subscribe"} to ${
+                video.snippet.channelTitle
+              }`}
+              onClick={handleSubscribeToggle}
+              className={`px-4 py-2 rounded-full flex items-center space-x-2 text-sm text-white ${
+                isSubs
+                  ? "bg-gray-800 text-white"
+                  : "bg-[#060606] dark:bg-white text-white dark:text-black"
+              }`}
             >
-              Subscribe
+              {isSubs ? "Subscribed" : "Subscribe"}
             </button>
           </div>
           <div className="flex items-center md:justify-evenly justify-between w-full md:w-auto mt-4 md:mt-0">

@@ -1,0 +1,7 @@
+https://www.googleapis.com/auth/youtube.force-ssl // untuk like, komen, subscribe
+https://www.googleapis.com/auth/youtube.upload // untuk upload video
+https://www.googleapis.com/auth/userinfo.profile // mendapatkan data profile
+https://www.googleapis.com/auth/userinfo.email // mendapatkan data email
+https://www.googleapis.com/auth/youtube // akses penuh youtube
+https://www.googleapis.com/auth/youtube.broadcast // membuat dan mengelola live stream
+https://www.googleapis.com/auth/youtube.channel-memberships.creator // akses langganan creator

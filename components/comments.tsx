@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn, formatPublishedDate, formatViews } from "@/lib/utils";
+import EmojiPicker from "emoji-picker-react";
+import Notification from "./notification";
 import {
   fetchComments,
   fetchCommentReplies,
   fetchChannelDetails,
+  commentVideo,
 } from "@/lib/youtube-api";
 import {
   ThumbsUp,
@@ -16,10 +19,14 @@ import {
   ChevronDown,
   BadgeCheck,
   X,
+  Smile,
+  SendHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { Textarea } from "./ui/textarea";
 
 interface Comment {
   id: string;
@@ -58,6 +65,7 @@ interface CommentsProps {
 }
 
 export default function Comments({ videoId, authorChannelId }: CommentsProps) {
+  const { data: session } = useSession();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedComments, setExpandedComments] = useState<{
@@ -71,6 +79,17 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
   const [isMobileView, setIsMobileView] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [randomCommentIndex, setRandomCommentIndex] = useState(0);
+  const [focus, setFocus] = useState(false);
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const inputMobileRef = useRef<HTMLInputElement | null>(null);
+  const [status, setStatus] = useState<{
+    type: "error" | "info" | "success";
+    message: string;
+  }>({
+    type: "info",
+    message: "",
+  });
 
   const { ref, inView } = useInView();
 
@@ -168,6 +187,32 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
     },
     [expandedComments, replies]
   );
+
+  const clickedEmoji = (event: any, viewport: "mobile" | "desktop") => {
+    if (viewport === "desktop") {
+      setQuery((prev) => prev + event.emoji);
+    } else {
+      inputMobileRef.current += event.emoji;
+    }
+    setOpen(false);
+  };
+
+  const handleComments = async () => {
+    const response = await commentVideo(videoId, query, session?.accessToken);
+    if (response) {
+      setQuery("");
+      loadComments();
+      setStatus({
+        type: "success",
+        message: "Successful comment",
+      });
+    } else if (!response) {
+      setStatus({
+        type: "error",
+        message: "Something went wrong.",
+      });
+    }
+  };
 
   const AuthorName = ({
     name,
@@ -372,6 +417,12 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
     );
   }
 
+  const handleInputRef = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (inputMobileRef.current) {
+      inputMobileRef.current.value = e.target.value;
+    }
+  };
+
   return (
     <>
       {isMobileView ? (
@@ -416,6 +467,33 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                       <X className="h-6 w-6" />
                     </Button>
                   </div>
+                  <div className="fixed flex flex-1 bottom-0 bg-background z-50 w-full p-2 items-center gap-2 dark:bg-[#272829] bg-slate-100">
+                    <div className="layer pointer-events-none flex-shrink-0">
+                      <img
+                        src={
+                          (session?.user?.image as string) ||
+                          "/placeholder.avif"
+                        }
+                        alt={(session?.user?.name as string) || "Not Logged In"}
+                        className="w-8 h-8 rounded-full shrink-0"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      className="bg-none rounded-md w-full placeholder:text-sm text-sm outline-none p-1 placeholder:px-2"
+                      ref={inputMobileRef}
+                      onChange={handleInputRef}
+                      placeholder="Add Comments..."
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-5 h-5"
+                      onClick={() => handleComments()}
+                    >
+                      <SendHorizontal className="h-8 w-8" />
+                    </Button>
+                  </div>
                   <div className="flex-1 bg-background overflow-y-auto p-4 space-y-4">
                     {comments.map((comment, i) => (
                       <CommentCard key={i} comment={comment} />
@@ -458,6 +536,67 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
               </svg>
               Sort by
             </Button>
+          </div>
+          <div
+            className={`flex gap-2 items-center ${
+              focus ? "mb-[3.8rem]" : "mb-8"
+            }`}
+          >
+            <div className="layer pointer-events-none">
+              <Avatar>
+                <AvatarImage
+                  src={(session?.user?.image as string) || "/placeholder.avif"}
+                  alt={(session?.user?.name as string) || "Not Logged In"}
+                  className="w-10 h-10"
+                />
+                <AvatarFallback>{session?.user?.name as string}</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="flex flex-col w-full relative">
+              <input
+                className="bg-background border-b-2 dark:border-b-[#272829] dark:text-white border-gray-[#272829] focus:border-b-[#272829] text-black outline-none dark:focus:border-b-white text-sm w-full placeholder:text-sm"
+                placeholder="Add comments..."
+                type="text"
+                onFocus={() => setFocus((prev) => !prev)}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <div
+                className={`absolute bottom-[-50px] left-0 w-full flex justify-between items-center transition-all ${
+                  focus ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+              >
+                <div className="absolute top-5 left-10">
+                  <EmojiPicker
+                    open={open}
+                    onEmojiClick={(e) => clickedEmoji(e, "desktop")}
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setOpen((prev) => !prev)}
+                >
+                  <Smile className="h-6 w-6" />
+                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFocus(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <button
+                    className="dark:disabled:bg-gray-600 disabled:opacity-50 disabled:text-opacity-60 dark:bg-blue-500 rounded-full dark:text-white bg-black text-white text-sm p-2"
+                    disabled={query.length === 0 ? true : false}
+                    onClick={() => handleComments()}
+                  >
+                    Comment
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="space-y-6">
             {comments.map((comment, i) => (
@@ -598,6 +737,13 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                       </div>
                     )}
                   </div>
+                )}
+                {status.message !== "" && (
+                  <Notification
+                    type={status.type}
+                    text={status.message}
+                    duration={3000}
+                  />
                 )}
               </div>
             ))}

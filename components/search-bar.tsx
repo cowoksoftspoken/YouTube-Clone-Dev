@@ -2,11 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Mic, MicOff, Search, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { generateSessionId } from "@/lib/utils";
 import { fetchSearchSuggestions } from "@/lib/youtube-api";
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 export default function SearchBar({
   onCloseAction,
@@ -19,6 +26,41 @@ export default function SearchBar({
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isRecording, setIsRecording] = useState(false);
+
+  const isWindowAvailable = typeof window !== "undefined" ? window : null;
+  const SpeechRecognition =
+    isWindowAvailable?.SpeechRecognition ||
+    isWindowAvailable?.webkitSpeechRecognition;
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+  const startSpeechToText = () => {
+    if (!recognition) return;
+
+    recognition.lang = "id-ID";
+    recognition.continuous = true;
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      setQuery(transcript);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error(event.error);
+    };
+
+    recognition.start();
+    setIsRecording(true);
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+  };
+
+  const stopSpeechToText = () => {
+    recognition.stop();
+    setIsRecording(false);
+  };
 
   const fetchSuggestions = useCallback(async () => {
     if (query.trim()) {
@@ -81,7 +123,7 @@ export default function SearchBar({
     <div className="relative w-full">
       <form
         onSubmit={handleSubmit}
-        className="flex w-full max-w-sm relative items-center space-x-2"
+        className="flex max-w-full relative items-center space-x-2"
       >
         <Input
           type="text"
@@ -96,11 +138,22 @@ export default function SearchBar({
         <Button
           type="submit"
           size="icon"
-          className="absolute md:right-0 right-12"
+          className="absolute md:right-[3rem] right-12 bg-slate-100 hover:bg-slate-950 hover:text-white dark:bg-[#272829] dark:text-white rounded-r-full"
           variant="ghost"
         >
           <Search className="h-4 w-4" />
           <span className="sr-only">Search</span>
+        </Button>
+        <Button
+          className="rounded-full h-10 w-10 md:flex justify-center items-center dark:hover:bg-slate-950 hover:text-white dark:bg-[#272829] dark:text-white hidden bg-slate-100 text-black"
+          variant="default"
+          onClick={isRecording ? stopSpeechToText : startSpeechToText}
+        >
+          {isRecording ? (
+            <MicOff className="h-4 w-4 shrink-0" />
+          ) : (
+            <Mic className="h-4 w-4 shrink-0" />
+          )}
         </Button>
         {onCloseAction && (
           <Button
@@ -114,6 +167,7 @@ export default function SearchBar({
           </Button>
         )}
       </form>
+
       {showSuggestions && suggestions.length > 0 && (
         <div
           ref={dropdownRef}

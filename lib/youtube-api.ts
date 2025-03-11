@@ -208,6 +208,132 @@ export async function fetchSearchSuggestions(query: string): Promise<string[]> {
   }
 }
 
+export async function likeVideo(videoId: string, accessToken: string) {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("An Error Occurred in Like Video");
+  }
+
+  const data = await response.text();
+  return data;
+}
+
+export async function subscribeChannel(channelId: string, accessToken: string) {
+  const response = await fetch(
+    "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        snippet: {
+          resourceId: {
+            kind: "youtube#channel",
+            channelId: channelId,
+          },
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("An Error Occured in Subscribe");
+  }
+
+  const data = await response.text();
+  return data;
+}
+
+export const checkSubscription = async (channelId: string, accessToken: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/subscriptions?part=id&forChannelId=${channelId}&mine=true&key=${API_KEY}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  const data = await response.json();
+  return data.items?.length > 0 ? data.items[0].id : null;
+};
+
+export const unsubscribeChannel = async (subscriptionId: string, accessToken: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/subscriptions?id=${subscriptionId}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  return response.ok;
+};
+
+
+export async function deleteComments(commentId: string, accessToken: string) {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/comments?id=${commentId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    return { error: errorData, status: response.status };
+  }
+
+  return { status: response.status, message: "Comments Deleted" };
+}
+
+export async function commentVideo(
+  videoId: string,
+  commentText: string,
+  accessToken?: string
+) {
+  const response = await fetch(
+    "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        snippet: {
+          videoId: videoId,
+          topLevelComment: {
+            snippet: {
+              textOriginal: commentText,
+            },
+          },
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    console.error("Gagal mengirim komentar");
+    return;
+  }
+
+  const data = await response.text();
+  return data;
+}
+
 export async function fetchChannelAbout(channelId: string) {
   const params = new URLSearchParams({
     part: "snippet,statistics,brandingSettings",

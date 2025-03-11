@@ -1,18 +1,49 @@
 "use client";
 
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Bell, Menu, Plus, Search, User, Video } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
-import { Youtube, Bell, User, Menu, Search } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
-import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
+import AccountDropdown from "./dropdown-menu";
 import SearchBar from "./search-bar";
-import { useState } from "react";
 import Sidebar from "./sidebar";
+import { Button } from "./ui/button";
+import { DropdownMenu } from "./ui/dropdown-menu";
+
+const YoutubeC = "/YoutubeC.svg";
+const YoutubeCWhite = "/YoutubeCWhite.svg";
 
 export default function Header() {
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mediaTheme, setMediaTheme] = useState(false);
+  const { theme } = useTheme();
+
+  const handleLogin = async () => {
+    await signIn("google");
+  };
+
+  useEffect(() => {
+    const prefersTheme = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    setMediaTheme(prefersTheme);
+  }, [theme]);
+
+  const DinamicYoutubeIcon =
+    theme === "dark"
+      ? YoutubeCWhite
+      : theme === "light"
+      ? YoutubeC
+      : mediaTheme
+      ? YoutubeCWhite
+      : YoutubeC;
+
   return (
-    <header className="sticky top-0 z-50 w-full  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:p-2 p-0 py-1">
       <div className="flex h-14 items-center px-3 justify-between">
         <div className="flex items-center">
           <Button
@@ -25,12 +56,18 @@ export default function Header() {
             <span className="sr-only">Toggle sidebar</span>
           </Button>
           <Link href="/" className="flex items-center space-x-2">
-            <Youtube className="h-6 w-6 text-red-600" />
-            <span className="font-bold sm:inline-block">YouTube</span>
+            <div className="layer pointer-none">
+              <img
+                src={DinamicYoutubeIcon}
+                alt="YouTube"
+                className="h-24 w-24 text-white dark:text-black"
+              />
+            </div>
+            <span className="font-bold sm:inline-block sr-only">YouTube</span>
           </Link>
         </div>
-        <div className="flex-1 flex justify-center max-w-2xl md:max-w-sm mx-4">
-          <div className="hidden md:flex md:w-[400px] lg:w-[600px]">
+        <div className="flex-1 flex justify-center max-w-2xl mx-4">
+          <div className="hidden md:flex md:w-full lg:w-[600px]">
             <SearchBar />
           </div>
         </div>
@@ -44,15 +81,37 @@ export default function Header() {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden md:flex dark:bg-[#272829] dark:text-white w-8 h-8 rounded-full justify-center items-center bg-slate-100 hover:bg-slate-950 hover:text-white"
+            title="Create Video"
+          >
+            <Link href="/create/upload">
+              <Plus className="h-5 w-5" />
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" title="Notifications">
             <Bell className="h-5 w-5" />
             <span className="sr-only">Notifications</span>
           </Button>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-            <span className="sr-only">User account</span>
+          <Button variant="ghost" role="link" size="icon">
+            {session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <img
+                    src={session?.user?.image as string}
+                    alt={session?.user?.name as string}
+                    className="h-7 w-7 rounded-full"
+                  />
+                </DropdownMenuTrigger>
+                <AccountDropdown />
+              </DropdownMenu>
+            ) : (
+              <User className="h-5 w-5" onClick={() => handleLogin()} />
+            )}
+            <span className="sr-only">{session ? "Logout" : "Login"}</span>
           </Button>
-          <ModeToggle />
         </div>
       </div>
       {isSearchOpen && (

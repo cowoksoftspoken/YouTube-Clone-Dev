@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { formatViews, formatPublishedDate, formatDuration } from "@/lib/utils";
 import { useRef, useEffect, useState } from "react";
+import { Roboto } from "next/font/google";
 
 interface Video {
   id: { videoId: string } | string;
@@ -23,6 +24,8 @@ interface VideoCardProps {
 }
 
 let videoId: string | null = null;
+
+const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500"] });
 
 export default function VideoCard({ video, compact = false }: VideoCardProps) {
   if (video.snippet?.resourceId?.videoId) {
@@ -75,7 +78,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
     <Link href={`/watch/${videoId}`}>
       <div
         className={`group cursor-pointer ${
-          compact ? "flex items-start space-x-2" : ""
+          compact ? "flex items-start space-x-2" : roboto.className
         }`}
       >
         <div

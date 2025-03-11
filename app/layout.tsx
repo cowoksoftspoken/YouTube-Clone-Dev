@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import SidebarDesktop from "@/components/sidebar-desktop";
+import SessionProvider from "@/components/session-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,21 +60,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="flex h-screen flex-col">
-            <Header />
-            <div className="flex flex-1 overflow-hidden">
-              <SidebarDesktop />
-              <main className="flex-1 overflow-y-auto p-4">{children}</main>
+      <body className={`${inter.className} antialiased`}>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex h-screen flex-col">
+              <Header />
+              <div className="flex flex-1 overflow-hidden">
+                <SidebarDesktop />
+                <main className="flex-1 overflow-y-auto p-4">{children}</main>
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

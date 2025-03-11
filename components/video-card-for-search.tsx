@@ -26,12 +26,14 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
     <Link href={`/watch/${videoId}`} className="block">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-12">
         <div className="relative overflow-hidden rounded-lg sm:col-span-4 aspect-video">
-          <OptimizedImage
-            src={video.snippet.thumbnails.medium.url}
-            alt={video.snippet.title}
-            loading="eager"
-            className="transition-transform w-full group-hover:scale-110"
-          />
+          <div style={{ pointerEvents: "none" }}>
+            <OptimizedImage
+              src={video.snippet.thumbnails.medium.url}
+              alt={video.snippet.title}
+              loading="eager"
+              className="transition-transform w-full group-hover:scale-110"
+            />
+          </div>
         </div>
         <div className="sm:col-span-8">
           <h3 className="font-semibold line-clamp-2 text-base sm:text-lg mb-1">

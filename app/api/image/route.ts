@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 
+const cache = new Map();
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const imageUrl = searchParams.get("url");
@@ -19,6 +21,21 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const cacheKey = `${imageUrl}-${width}-${format}-${quality}`;
+
+  if (cache.has(cacheKey)) {
+    console.log(`🔥 Serving from cache: ${cacheKey}`);
+    return new NextResponse(new Uint8Array(cache.get(cacheKey)), {
+      headers: {
+        "Content-Type": `image/${format}`,
+        "Content-Length": cache.get(cacheKey).length.toString(),
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
+  }
+
+  console.log(`🆕 Fetching new image: ${imageUrl}`);
+
   try {
     const response = await fetch(imageUrl);
     const buffer = await response.arrayBuffer();
@@ -28,7 +45,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (format === "webp") {
-      image = image.toFormat("webp", { quality, nearLossless: true });
+      image = image.toFormat("webp", { quality, nearLossless: false });
     } else if (format === "jpeg" || format === "jpg") {
       image = image.toFormat("jpeg", {
         quality,
@@ -36,20 +53,27 @@ export async function GET(req: NextRequest) {
         mozjpeg: true,
       });
     } else if (format === "png") {
-      image = image.toFormat("png", { quality, palette: true });
+      image = image.toFormat("png", {
+        quality,
+        adaptiveFiltering: true,
+        compressionLevel: 9,
+      });
     }
 
-    image = image.blur(0.3);
     const optimizedImage = await image.toBuffer();
 
-    return new NextResponse(optimizedImage, {
+    cache.set(cacheKey, optimizedImage);
+    console.log(`✅ Image cached: ${cacheKey}`);
+
+    return new NextResponse(new Uint8Array(optimizedImage), {
       headers: {
         "Content-Type": `image/${format}`,
+        "Content-Length": optimizedImage.length.toString(),
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
   } catch (error) {
-    console.error("Error optimizing image:", error);
+    console.error("❌ Error optimizing image:", error);
     return NextResponse.json(
       { error: "Gagal memproses gambar" },
       { status: 500 }

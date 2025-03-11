@@ -10,7 +10,7 @@ export default async function WatchPage({
 }) {
   const resolvedParams = await params;
   const videoData = await fetchVideoDetails(resolvedParams.id);
-  const channelData = await fetchChannelDetails(videoData.snippet.channelId);
+  const channelData = await fetchChannelDetails(videoData?.snippet?.channelId);
 
   return (
     <div className="md:max-w-7xl max-w-[100vw] mx-auto md:px-4 px-0 py-3">

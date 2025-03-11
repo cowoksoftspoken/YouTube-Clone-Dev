@@ -7,6 +7,7 @@ import VideoCardSkeleton from "@/components/video-card-skeleton";
 import { searchVideos } from "@/lib/youtube-api";
 import { Roboto } from "next/font/google";
 import VideoCardForSearch from "@/components/video-card-for-search";
+import { FilterIcon } from "lucide-react";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500"] });
 
@@ -54,6 +55,25 @@ export default function SearchResults() {
   return (
     <div className={roboto.className} id={sid}>
       <span className="sr-only">Penelusuran untuk {query}</span>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 cursor-pointer" role="button">
+          <FilterIcon className="h-5 w-5" />
+          Filter
+        </div>
+        <div className="flex items-center gap-2 cursor-pointer" role="button">
+          <svg
+            height="48"
+            viewBox="0 0 48 48"
+            className="h-4 w-4 text-black dark:text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+          >
+            <path d="M6 36h12v-4h-12v4zm0-24v4h36v-4h-36zm0 14h24v-4h-24v4z" />
+            <path d="M0 0h48v48h-48z" fill="none" />
+          </svg>
+          Sort
+        </div>
+      </div>
       <div
         className="grid grid-cols-1 gap-4"
         data-shortedby={shortedBy}

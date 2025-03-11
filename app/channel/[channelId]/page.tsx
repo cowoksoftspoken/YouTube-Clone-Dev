@@ -27,8 +27,15 @@ export default async function ChannelPage({
       ]);
 
     return (
-      <div className="container mx-auto px-4 py-8">
-        <ChannelHeader channel={channelDetails} />
+      <div className="container mx-auto px-4 py-4">
+        <ChannelHeader
+          channel={channelDetails}
+          banner={
+            channelAbout?.brandingSettings?.image?.bannerExternalUrl ??
+            undefined
+          }
+          channelId={resolvedParams.channelId}
+        />
         <Tabs defaultValue="videos" className="mt-8">
           <TabsList className="flex justify-start w-full bg-transparent mb-4 border-b-2 border-gray-500">
             <TabsTrigger value="videos">Videos</TabsTrigger>
