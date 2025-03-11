@@ -37,7 +37,11 @@ For more details on Next.js, check out:
 
 - [Next.js Documentation](https://nextjs.org/docs)  
 - [Interactive Next.js Tutorial](https://nextjs.org/learn)  
-- [Next.js GitHub Repository](https://github.com/vercel/next.js)  
+- [Next.js GitHub Repository](https://github.com/vercel/next.js)
+- [OAuth 2.0 Guide](https://oauth.net/2/) – Learn how to implement authentication with OAuth2
+- [Google OAuth2 Docs](https://developers.google.com/identity/protocols/oauth2) – Google OAuth2 integration
+- [YouTube Data API](https://developers.google.com/youtube/v3) – Fetch videos, playlists, and more
+- [Vercel Documentation](https://vercel.com/docs) – Deploy your Next.js app easily
 
 ## 🚀 Deployment  
 
@@ -48,3 +52,6 @@ More details on deployment: [Next.js Deployment Docs](https://nextjs.org/docs/ap
 ## ⚠️ Disclaimer  
 
 This project is for **personal and educational use only**. **Commercial use is strictly prohibited.** By using this code, you agree not to use it for any commercial purposes.  
+
+## 📝 Notes
+This is just a hobby project, and this repository serves as a place to store my code. Expect frequent updates, experiments, and changes as I explore new features and technologies.
