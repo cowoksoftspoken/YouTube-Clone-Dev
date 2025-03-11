@@ -1,11 +1,10 @@
-```markdown
 # 🚀 Get Started  
 
 ## ⚙️ Configuration  
 
 Before running the project, make sure to configure your environment variables. Create a `.env.local` file in the root directory and define any necessary variables:  
 
-```env
+```.env
 NEXT_PUBLIC_YOUTUBE_API_KEY=your-key
 GOOGLE_CLIENT_ID=your-value
 GOOGLE_CLIENT_SECRET=your-google-secret
