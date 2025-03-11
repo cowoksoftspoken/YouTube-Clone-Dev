@@ -1,8 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+```markdown
+# 🚀 Get Started  
 
-## Getting Started
+## ⚙️ Configuration  
 
-First, run the development server:
+Before running the project, make sure to configure your environment variables. Create a `.env.local` file in the root directory and define any necessary variables:  
+
+```env
+NEXT_PUBLIC_YOUTUBE_API_KEY=your-key
+GOOGLE_CLIENT_ID=your-value
+GOOGLE_CLIENT_SECRET=your-google-secret
+NEXTAUTH_SECRET=your-secret
+```
+
+Replace the values with your actual environment variables.  
+
+## 🔧 Development  
+
+To start the development server, run:  
 
 ```bash
 npm run dev
@@ -14,23 +28,24 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then, open [http://localhost:3000](http://localhost:3000) in your browser to see the app running.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can modify the main page by editing `app/page.tsx`. The page will auto-update when you save the file.  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📚 Learn More  
 
-## Learn More
+For more details on Next.js, check out:  
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)  
+- [Interactive Next.js Tutorial](https://nextjs.org/learn)  
+- [Next.js GitHub Repository](https://github.com/vercel/next.js)  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Deployment  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To deploy your app effortlessly, use [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app).  
 
-## Deploy on Vercel
+More details on deployment: [Next.js Deployment Docs](https://nextjs.org/docs/app/building-your-application/deploying).  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚠️ Disclaimer  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for **personal and educational use only**. **Commercial use is strictly prohibited.** By using this code, you agree not to use it for any commercial purposes.  
