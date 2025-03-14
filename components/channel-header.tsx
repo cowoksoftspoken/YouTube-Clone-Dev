@@ -134,11 +134,13 @@ export default function ChannelHeader({
               "No description available."}
           </p>
           <button
-            className={` px-4 py-2 rounded-full  items-center space-x-2 text-sm mt-2 hidden md:flex ${
-              isSubs
-                ? "bg-gray-800 text-white"
-                : "bg-[#060606] dark:bg-white text-white dark:text-black"
-            }`}
+            className={`px-4 py-2 rounded-full 
+               items-center space-x-2 text-sm mt-2 hidden md:flex ${
+                 isSubs
+                   ? "bg-[#272829] text-white"
+                   : "text-white bg-[#060606] dark:bg-white dark:text-black"
+               }
+               `}
             onClick={handleSubscribeToggle}
           >
             {isSubs ? "Subscribed" : "Subscribe"}
@@ -150,10 +152,10 @@ export default function ChannelHeader({
           "No Description Available."}
       </p>
       <button
-        className={`px-4 py-2 rounded-full flex items-center space-x-2 text-sm justify-center mt-2 w-full md:hidden ${
+        className={`px-4 py-2 rounded-full flex items-center space-x-2 text-sm justify-center mt-2 w-full md:hidden  ${
           isSubs
-            ? "bg-gray-800 text-white"
-            : "bg-[#060606] dark:bg-white text-white dark:text-black"
+            ? "bg-[#272829] text-white"
+            : "text-white bg-[#060606] dark:bg-white  dark:text-black"
         }`}
         onClick={handleSubscribeToggle}
       >

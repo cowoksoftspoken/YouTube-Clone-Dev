@@ -193,10 +193,10 @@ export default function VideoPlayer({
                 video.snippet.channelTitle
               }`}
               onClick={handleSubscribeToggle}
-              className={`px-4 py-2 rounded-full flex items-center space-x-2 text-sm text-white ${
+              className={`px-4 py-2 rounded-full flex items-center space-x-2 text-sm  ${
                 isSubs
-                  ? "bg-gray-800 text-white"
-                  : "bg-[#060606] dark:bg-white text-white dark:text-black"
+                  ? "bg-[#272829] text-white"
+                  : "text-white bg-[#060606] dark:bg-white  dark:text-black"
               }`}
             >
               {isSubs ? "Subscribed" : "Subscribe"}

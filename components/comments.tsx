@@ -90,6 +90,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
     type: "info",
     message: "",
   });
+  const firstRender = useRef(true);
 
   const { ref, inView } = useInView();
 
@@ -156,17 +157,19 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
   );
 
   useEffect(() => {
-    loadComments();
-  }, []);
+    if (firstRender.current) {
+      firstRender.current = false;
+      loadComments();
+      return;
+    }
 
-  useEffect(() => {
     if (inView && nextPageToken) {
       loadComments(nextPageToken);
     }
-  }, [inView, nextPageToken]);
+  }, [inView]);
 
   useEffect(() => {
-    if (comments.length > 0) {
+    if (comments.length > 0 && isMobileView) {
       setRandomCommentIndex(Math.floor(Math.random() * comments.length));
     }
   }, [comments]);
@@ -480,7 +483,7 @@ export default function Comments({ videoId, authorChannelId }: CommentsProps) {
                     </div>
                     <input
                       type="text"
-                      className="bg-none rounded-md w-full placeholder:text-sm text-sm outline-none p-1 placeholder:px-2"
+                      className="bg-none rounded-md w-full placeholder:text-sm text-sm outline-none p-2 placeholder:px-2"
                       ref={inputMobileRef}
                       onChange={handleInputRef}
                       placeholder="Add Comments..."

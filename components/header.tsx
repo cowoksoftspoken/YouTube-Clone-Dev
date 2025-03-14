@@ -103,6 +103,7 @@ export default function Header() {
                     src={session?.user?.image as string}
                     alt={session?.user?.name as string}
                     className="h-7 w-7 rounded-full"
+                    loading="eager"
                   />
                 </DropdownMenuTrigger>
                 <AccountDropdown />

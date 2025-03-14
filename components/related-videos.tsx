@@ -42,7 +42,7 @@ export default function RelatedVideos({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-2">
       <h2 className="text-xl font-semibold mb-4">Related Videos</h2>
       {relatedVideos.map((video, index) => (
         <VideoCard key={index} video={video} compact />
