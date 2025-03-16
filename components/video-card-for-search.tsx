@@ -76,15 +76,15 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
           </div>
 
           <div className="flex-1">
-            <h3 className="font-semibold text-base sm:text-lg text-white">
+            <h3 className="font-semibold text-base sm:text-lg dark:text-white text-black">
               {video.snippet.title}
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm dark:text-gray-400 text-gray-600">
               {channelDetails?.snippet?.customUrl} {"•"}{" "}
               {formatViews(Number(channelDetails?.statistics?.subscriberCount))}{" "}
               subscribers
             </p>
-            <p className="text-sm text-gray-400 line-clamp-2">
+            <p className="text-sm dark:text-gray-400 text-gray-600 line-clamp-2">
               {video.snippet.description}
             </p>
           </div>
@@ -119,18 +119,18 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
 
         <div className="flex flex-col flex-1 space-y-2">
           <Link href={`/watch/${videoId}`}>
-            <h3 className="font-semibold text-base line-clamp-2 text-white">
+            <h3 className="font-semibold text-base line-clamp-2 dark:text-white text-black">
               {he.decode(video.snippet.title)}
             </h3>
-            <div className="text-sm text-gray-400 mt-1">
+            <div className="text-sm dark:text-gray-400 text-gray-600 mt-1">
               {viewCount} {viewCount ? "•" : ""} {publishedDate}
             </div>
           </Link>
 
-          <div className="flex items-center space-x-2 text-sm text-gray-400 mt-1">
+          <div className="flex items-center space-x-2 text-sm dark:text-gray-400 text-gray-600 mt-1">
             <Link
               href={`/channel/${video.snippet.channelId}`}
-              className="flex items-center gap-2 hover:text-white"
+              className="flex items-center gap-2 dark:hover:text-white hover:text-black"
             >
               <OptimizedImage
                 src={channelImage || "/placeholder.avif"}
@@ -141,7 +141,7 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
             </Link>
           </div>
 
-          <p className="text-sm text-gray-400 line-clamp-2 hidden sm:block mt-1">
+          <p className="text-sm dark:text-gray-400 text-gray-600 line-clamp-2 hidden sm:block mt-1">
             {video.snippet.description}
           </p>
         </div>

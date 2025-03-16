@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Home,
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
 
 const sidebarItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -56,11 +57,17 @@ interface SidebarProps {
   onCloseAction: () => void;
 }
 
+const YoutubeC = "/YoutubeC.svg";
+const YoutubeCWhite = "/YoutubeCWhite.svg";
+
 export default function Sidebar({
   className,
   isOpen,
   onCloseAction,
 }: SidebarProps) {
+  const { theme } = useTheme();
+  const [mediaTheme, setMediaTheme] = useState(false);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -71,6 +78,22 @@ export default function Sidebar({
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onCloseAction]);
+
+  useEffect(() => {
+    const prefersTheme = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    setMediaTheme(prefersTheme);
+  }, [theme]);
+
+  const DinamicYoutubeIcon =
+    theme === "dark"
+      ? YoutubeCWhite
+      : theme === "light"
+      ? YoutubeC
+      : mediaTheme
+      ? YoutubeCWhite
+      : YoutubeC;
 
   return (
     <>
@@ -89,9 +112,12 @@ export default function Sidebar({
         )}
       >
         <div className="flex justify-between items-center p-4 md:hidden">
-          <span className="font-semibold flex gap-2 items-center">
-            <Youtube className="h-6 w-6 text-red-500" />
-            Youtube
+          <span className="font-semibold flex items-center max-h-8">
+            <img
+              src={DinamicYoutubeIcon}
+              alt="YouTube"
+              className={`text-white dark:text-black w-24 h-auto`}
+            />
           </span>
           <Button variant="ghost" size="icon" onClick={onCloseAction}>
             <X className="h-5 w-5" />

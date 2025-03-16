@@ -228,6 +228,44 @@ export async function likeVideo(videoId: string, accessToken: string) {
   return data;
 }
 
+export const getLikeStatus = async (videoId: string, accessToken: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos/getRating?id=${videoId}&access_token=${accessToken}`
+  );
+  const data = await response.json();
+
+  if (data.items && data.items.length > 0) {
+    return data.items[0].rating;
+  }
+  return "none";
+};
+
+export const dislikeVideo = async (videoId: string, accessToken: string) => {
+  await fetch(
+    `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=dislike`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const removeLike = async (videoId: string, accessToken: string) => {
+  await fetch(
+    `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=none`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
 export async function subscribeChannel(channelId: string, accessToken: string) {
   const response = await fetch(
     "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet",
@@ -256,7 +294,10 @@ export async function subscribeChannel(channelId: string, accessToken: string) {
   return data;
 }
 
-export const checkSubscription = async (channelId: string, accessToken: string) => {
+export const checkSubscription = async (
+  channelId: string,
+  accessToken: string
+) => {
   const response = await fetch(
     `https://www.googleapis.com/youtube/v3/subscriptions?part=id&forChannelId=${channelId}&mine=true&key=${API_KEY}`,
     {
@@ -267,7 +308,10 @@ export const checkSubscription = async (channelId: string, accessToken: string) 
   return data.items?.length > 0 ? data.items[0].id : null;
 };
 
-export const unsubscribeChannel = async (subscriptionId: string, accessToken: string) => {
+export const unsubscribeChannel = async (
+  subscriptionId: string,
+  accessToken: string
+) => {
   const response = await fetch(
     `https://www.googleapis.com/youtube/v3/subscriptions?id=${subscriptionId}`,
     {
@@ -277,7 +321,6 @@ export const unsubscribeChannel = async (subscriptionId: string, accessToken: st
   );
   return response.ok;
 };
-
 
 export async function deleteComments(commentId: string, accessToken: string) {
   const response = await fetch(

@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import SidebarDesktop from "@/components/sidebar-desktop";
 import SessionProvider from "@/components/session-provider";
+import { PiPProvider } from "@/contexts/PIPContext";
+import FloatingPiP from "@/components/floating-pip";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,7 +43,13 @@ export const metadata: Metadata = {
   robots: "index, follow",
   manifest: "/site.webmanifest",
   icons: {
-    icon: "/favicon-32x32.png",
+    icon: [
+      {
+        url: "/favicon_48x48.png",
+        type: "image/png",
+        sizes: "48x48",
+      },
+    ],
     apple: "/apple-touch-icon.png",
   },
   alternates: {
@@ -68,13 +76,16 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex h-screen flex-col">
-              <Header />
-              <div className="flex flex-1 overflow-hidden">
-                <SidebarDesktop />
-                <main className="flex-1 overflow-y-auto p-4">{children}</main>
+            <PiPProvider>
+              <div className="flex h-screen flex-col">
+                <Header />
+                <div className="flex flex-1 overflow-hidden">
+                  <SidebarDesktop />
+                  <main className="flex-1 overflow-y-auto p-4">{children}</main>
+                </div>
               </div>
-            </div>
+              <FloatingPiP />
+            </PiPProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

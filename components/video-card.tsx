@@ -6,6 +6,7 @@ import { useRef, useEffect, useState } from "react";
 import { Roboto } from "next/font/google";
 import { fetchChannelDetails } from "../lib/youtube-api";
 import OptimizedImage from "@/lib/OptimizedImage";
+import he from "he";
 
 interface Video {
   id: { videoId: string } | string;
@@ -160,7 +161,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
           <>
             <Link href={`/watch/${videoId}`}>
               <h3 className="font-medium text-sm line-clamp-2">
-                {video.snippet.title}
+                {he.decode(video.snippet.title)}
               </h3>
             </Link>
             <Link

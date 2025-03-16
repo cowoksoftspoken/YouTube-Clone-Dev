@@ -1,26 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { formatViews, formatPublishedDate } from "@/lib/utils";
-import RelatedVideos from "@/components/related-videos";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import Link from "next/link";
-import {
-  Share2Icon,
-  ThumbsUp,
-  ThumbsDown,
-  MoreHorizontal,
-  Download,
-  CircleCheck,
-} from "lucide-react";
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
 import Comments from "@/components/comments";
+import RelatedVideos from "@/components/related-videos";
+import { usePiP } from "@/contexts/PIPContext";
+import { formatPublishedDate, formatViews } from "@/lib/utils";
 import {
-  subscribeChannel,
   checkSubscription,
+  dislikeVideo,
+  getLikeStatus,
+  likeVideo,
+  removeLike,
+  subscribeChannel,
   unsubscribeChannel,
 } from "@/lib/youtube-api";
+import {
+  CircleCheck,
+  Download,
+  MoreHorizontal,
+  PictureInPicture,
+  Share2Icon,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface VideoDetails {
   id: string;
@@ -67,6 +81,11 @@ export default function VideoPlayer({
   const [limit, setLimit] = useState<number>(50);
   const [isSubs, setIsSubs] = useState<boolean>(false);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [liked, setLiked] = useState<boolean>(false);
+  const [disliked, setDisliked] = useState<boolean>(false);
+  const playerRef = useRef<any>(null);
+  const { isPiP, setIsPiP, setVideoId, setVideoTime, videoTime } = usePiP();
+  const router = useRouter();
   if (typeof window !== "undefined") document.title = video.snippet.title;
 
   const handleSetLimit = () => {
@@ -84,8 +103,7 @@ export default function VideoPlayer({
     navigator
       .share({
         title: video.snippet.title,
-        text: video.snippet.description,
-        url: `\n\n${window.location.href}`,
+        url: `${window.location.href}`,
       })
       .then(() => console.log("Successful share"))
       .catch((error) => console.log("Error sharing:", error));
@@ -103,6 +121,61 @@ export default function VideoPlayer({
       );
     }
   }, [session, channelDetails.id]);
+
+  useEffect(() => {
+    if (session?.accessToken) {
+      const fetchLikeStatus = async () => {
+        try {
+          const status = await getLikeStatus(videoId, session!.accessToken);
+          setLiked(status === "like");
+          setDisliked(status === "dislike");
+        } catch (error) {
+          console.error("Gagal cek status like:", error);
+        }
+      };
+
+      fetchLikeStatus();
+    }
+  }, [videoId, session]);
+
+  useEffect(() => {
+    if (!window.YT) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    window.onYouTubeIframeAPIReady = () => {
+      createPlayer();
+    };
+
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    }
+  }, []);
+
+  const createPlayer = () => {
+    if (!window.YT || !window.YT.Player) return;
+    playerRef.current = new window.YT.Player("youtube-player", {
+      videoId,
+      playerVars: { autoplay: 1 },
+      events: {
+        onReady: (event: YT.PlayerEvent) => {
+          playerRef.current = event.target;
+          event.target.seekTo(videoTime, true);
+        },
+      },
+    });
+  };
+
+  const handlePiP = () => {
+    if (playerRef.current) {
+      setVideoTime(playerRef.current.getCurrentTime());
+      setVideoId(videoId);
+      setIsPiP(true);
+      router.back();
+    }
+  };
 
   const handleSubscribeToggle = async (): Promise<void> => {
     if (!session || !session.accessToken) return;
@@ -128,6 +201,40 @@ export default function VideoPlayer({
     }
   };
 
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!session?.accessToken) return;
+
+    const actionType =
+      (e.currentTarget.getAttribute("data-type") as
+        | "like"
+        | "dislike"
+        | "none") ?? "none";
+
+    try {
+      if (actionType === "like") {
+        if (liked) {
+          await removeLike(videoId, session.accessToken);
+          setLiked(false);
+        } else {
+          await likeVideo(videoId, session.accessToken);
+          setLiked(true);
+          setDisliked(false);
+        }
+      } else if (actionType === "dislike") {
+        if (disliked) {
+          await removeLike(videoId, session.accessToken);
+          setDisliked(false);
+        } else {
+          await dislikeVideo(videoId, session.accessToken);
+          setDisliked(true);
+          setLiked(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error saat toggle like/dislike:", error);
+    }
+  };
+
   const isVerified =
     parseInt(channelDetails.statistics.subscriberCount) > 100000 &&
     channelDetails.snippet.customUrl;
@@ -135,16 +242,29 @@ export default function VideoPlayer({
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="lg:w-2/3">
-        <div className="md:aspect-video w-auto h-auto overflow-hidden rounded-lg">
-          <iframe
+        {!isPiP && (
+          <div className="md:aspect-video w-auto h-auto overflow-hidden rounded-lg relative group">
+            {/* <iframe
             width="100%"
             height="100%"
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-[300px] md:h-full"
-          ></iframe>
-        </div>
+          ></iframe> */}
+            <div
+              id="youtube-player"
+              className="w-full h-[300px] md:h-full"
+            ></div>
+            <button
+              className="absolute left-0 top-0 bottom-0 px-4 py-2 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              onClick={handlePiP}
+              title="Open Picture in Picture Mode"
+            >
+              <PictureInPicture className="w-8 h-8" />
+            </button>
+          </div>
+        )}
         <h1 className="md:text-2xl text-xl font-bold mt-4">
           {video.snippet.title}
         </h1>
@@ -202,15 +322,33 @@ export default function VideoPlayer({
               {isSubs ? "Subscribed" : "Subscribe"}
             </button>
           </div>
-          <div className="flex items-center md:justify-evenly justify-between w-full md:w-auto mt-4 md:mt-0">
+          <div
+            className="flex items-center md:justify-evenly justify-between w-full md:w-auto mt-4 md:mt-0 overflow-x-auto md:oveflow-x-none"
+            id="ytc-content-renderer"
+          >
             <div className="flex items-center rounded-full bg-slate-200 dark:bg-[#272928] text-black dark:text-white px-4 py-2 text-sm gap-2">
-              <button className="flex items-center cursor-pointer">
-                <ThumbsUp className="mr-2 h-4 w-4" />
+              <button
+                className="flex items-center cursor-pointer"
+                data-type="like"
+                onClick={handleClick}
+                title={!liked ? "Like Video" : "Cancel Like Video"}
+              >
+                <ThumbsUp
+                  className={`${
+                    liked ? "dark:text-indigo-500 text-blue-500" : ""
+                  } mr-2 h-4 w-4`}
+                />
                 {formatViews(Number.parseInt(video.statistics.likeCount))}
               </button>
               {"|"}
-              <button>
-                <ThumbsDown className=" h-4 w-4" />
+              <button
+                data-type="dislike"
+                onClick={handleClick}
+                title={!disliked ? "dislike Video" : "Cancel Dislike Video"}
+              >
+                <ThumbsDown
+                  className={`${disliked ? "text-red-500" : ""} h-4 w-4`}
+                />
               </button>
             </div>
             <button
@@ -222,9 +360,9 @@ export default function VideoPlayer({
             </button>
             <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex lg:hidden dark:text-white px-4 py-2 rounded-full flex items-center space-x-2 text-sm ml-2">
               <Download className="cursor-pointer mr-2 h-4 w-4" />
-              Unduh
+              Download
             </button>
-            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black dark:text-white p-2 rounded-full flex items-center text-sm  ml-2 hidden lg:flex">
+            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black dark:text-white p-2 rounded-full flex items-center text-sm  ml-2 flex">
               <MoreHorizontal className="cursor-pointer h-4 w-4" />
             </button>
           </div>
