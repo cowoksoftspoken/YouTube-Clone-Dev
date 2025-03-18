@@ -42,6 +42,7 @@ export default function ChannelHeader({
   const { data: session } = useSession();
   const [isSubs, setIsSubs] = useState<boolean>(false);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [bannerURL, setBannerURL] = useState<string | undefined>(banner);
 
   useEffect(() => {
     if (session && session.accessToken) {
@@ -53,6 +54,19 @@ export default function ChannelHeader({
       });
     }
   }, [session, channelId]);
+
+  useEffect(() => {
+    const updateBannerResolution = () => {
+      if (banner) {
+        setBannerURL(window.innerWidth >= 768 ? `${banner}=w2560` : banner);
+      }
+    };
+
+    updateBannerResolution();
+    window.addEventListener("resize", updateBannerResolution);
+
+    return () => window.removeEventListener("resize", updateBannerResolution);
+  }, [banner]);
 
   const handleSubscribeToggle = async (): Promise<void> => {
     if (!session || !session.accessToken) return;
@@ -82,8 +96,8 @@ export default function ChannelHeader({
         style={{ pointerEvents: "none" }}
       >
         <img
-          src={banner ?? "/background-default.avif"}
-          loading="eager"
+          src={bannerURL ?? "/background-default.avif"}
+          alt={`${channel.snippet.title}'s Banner`}
           className="w-full max-h-[150px] md:max-h-[200px] object-cover"
         />
       </div>

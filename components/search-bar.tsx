@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { generateSessionId } from "@/lib/utils";
 import { fetchSearchSuggestions } from "@/lib/youtube-api";
+import he from "he";
 
 declare global {
   interface Window {
@@ -181,7 +182,7 @@ export default function SearchBar({
                 className="flex items-center px-4 py-2 text-sm hover:bg-accent cursor-pointer flex-shrink-0"
               >
                 <Search className="h-4 w-4 mr-2 text-gray-500" />
-                {suggestion}
+                {he.decode(suggestion)}
               </li>
             ))}
           </ul>

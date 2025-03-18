@@ -152,7 +152,7 @@ export default function VideoPlayer({
     if (window.YT && window.YT.Player) {
       createPlayer();
     }
-  }, []);
+  }, [isPiP]);
 
   const createPlayer = () => {
     if (!window.YT || !window.YT.Player) return;
@@ -242,7 +242,7 @@ export default function VideoPlayer({
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="lg:w-2/3">
-        {!isPiP && (
+        {!isPiP ? (
           <div className="md:aspect-video w-auto h-auto overflow-hidden rounded-lg relative group">
             {/* <iframe
             width="100%"
@@ -257,15 +257,19 @@ export default function VideoPlayer({
               className="w-full h-[300px] md:h-full"
             ></div>
             <button
-              className="absolute left-0 top-0 bottom-0 px-4 py-2 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="absolute left-3 top-32 bottom-32 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               onClick={handlePiP}
               title="Open Picture in Picture Mode"
             >
               <PictureInPicture className="w-8 h-8" />
             </button>
           </div>
+        ) : (
+          <p className="capitalize text-sm w-full h-[300px] md:h-full">
+            the video is playing in picture in picture
+          </p>
         )}
-        <h1 className="md:text-2xl text-xl font-bold mt-4">
+        <h1 className="md:text-2xl text-xl font-bold mt-4" title={video.snippet.title}>
           {video.snippet.title}
         </h1>
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
