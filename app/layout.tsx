@@ -61,6 +61,9 @@ export const viewport: Viewport = {
   themeColor: "#FF0000",
 };
 
+const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 export default function RootLayout({
   children,
 }: {
@@ -68,7 +71,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.className} antialiased`}
+        data-prefered-locale={locale}
+        data-prefered-timezone={timeZone}
+      >
         <SessionProvider>
           <ThemeProvider
             attribute="class"

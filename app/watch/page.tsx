@@ -4,12 +4,12 @@ import VideoPlayer from "./video-player";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function WatchPage({
-  params,
+  searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  searchParams: Promise<{ v: string }>;
 }) {
-  const resolvedParams = await params;
-  const videoData = await fetchVideoDetails(resolvedParams.id);
+  const resolvedParams = (await searchParams).v;
+  const videoData = await fetchVideoDetails(resolvedParams as string);
   const channelData = await fetchChannelDetails(videoData?.snippet?.channelId);
 
   return (
@@ -18,7 +18,7 @@ export default async function WatchPage({
         <VideoPlayer
           initialVideo={videoData}
           channelDetails={channelData}
-          videoId={resolvedParams.id}
+          videoId={resolvedParams as string}
         />
       </Suspense>
     </div>

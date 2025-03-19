@@ -99,7 +99,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
         compact ? "flex items-start space-x-2" : roboto.className
       }`}
     >
-      <Link href={`/watch/${videoId}`}>
+      <Link href={`/watch?v=${videoId}`}>
         <div
           className={`overflow-hidden rounded-lg relative ${
             compact ? "w-[11rem] flex-shrink-0" : "aspect-video"
@@ -130,7 +130,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
               />
             </Link>
             <div className="flex-grow">
-              <Link href={`/watch/${videoId}`}>
+              <Link href={`/watch?v=${videoId}`}>
                 <h3 className="font-medium text-sm line-clamp-2 mb-1">
                   {video.snippet.title}
                 </h3>
@@ -159,7 +159,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
         )}
         {compact && (
           <>
-            <Link href={`/watch/${videoId}`}>
+            <Link href={`/watch?v=${videoId}`}>
               <h3 className="font-medium text-sm line-clamp-2">
                 {he.decode(video.snippet.title)}
               </h3>

@@ -158,7 +158,7 @@ export default function VideoPlayer({
     if (!window.YT || !window.YT.Player) return;
     playerRef.current = new window.YT.Player("youtube-player", {
       videoId,
-      playerVars: { autoplay: 1 },
+      playerVars: { autoplay: 1, rel: 0 },
       events: {
         onReady: (event: YT.PlayerEvent) => {
           playerRef.current = event.target;
@@ -240,7 +240,7 @@ export default function VideoPlayer({
     channelDetails.snippet.customUrl;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex flex-col lg:flex-row gap-8 overflow-hidden">
       <div className="lg:w-2/3">
         {!isPiP ? (
           <div className="md:aspect-video w-auto h-auto overflow-hidden rounded-lg relative group">
@@ -256,24 +256,29 @@ export default function VideoPlayer({
               id="youtube-player"
               className="w-full h-[300px] md:h-full"
             ></div>
-            <button
-              className="absolute left-3 top-32 bottom-32 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              onClick={handlePiP}
-              title="Open Picture in Picture Mode"
-            >
-              <PictureInPicture className="w-8 h-8" />
-            </button>
+            <div className="absolute flex md:left-[180px] left-[100px] md:bottom-1 bottom-0 gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button
+                className="text-white relative p-2"
+                onClick={handlePiP}
+                title="Open Super Picture in Picture Mode"
+              >
+                <PictureInPicture className="md:w-5 md:h-5 h-[1.5rem] w-[1.5rem]" />
+              </button>
+            </div>
           </div>
         ) : (
           <p className="capitalize text-sm w-full h-[300px] md:h-full">
             the video is playing in picture in picture
           </p>
         )}
-        <h1 className="md:text-2xl text-xl font-bold mt-4" title={video.snippet.title}>
+        <h1
+          className="md:text-2xl text-xl font-bold mt-4"
+          title={video.snippet.title}
+        >
           {video.snippet.title}
         </h1>
         <div className="flex items-center justify-between mt-4 flex-col md:flex-row">
-          <div className="flex items-center justify-between space-x-4 w-full md:w-auto w-full">
+          <div className="flex items-center justify-between space-x-4 w-full md:w-auto">
             <div className="flex gap-2 items">
               <div
                 className="layer rounded-full overflow-hidden"
@@ -362,11 +367,11 @@ export default function VideoPlayer({
               <Share2Icon className="cursor-pointer mr-2 h-4 w-4" />
               Share
             </button>
-            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex lg:hidden dark:text-white px-4 py-2 rounded-full flex items-center space-x-2 text-sm ml-2">
+            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex lg:hidden dark:text-white px-4 py-2 rounded-full items-center space-x-2 text-sm ml-2">
               <Download className="cursor-pointer mr-2 h-4 w-4" />
               Download
             </button>
-            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black dark:text-white p-2 rounded-full flex items-center text-sm  ml-2 flex">
+            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black dark:text-white p-2 rounded-full items-center text-sm  ml-2 flex">
               <MoreHorizontal className="cursor-pointer h-4 w-4" />
             </button>
           </div>

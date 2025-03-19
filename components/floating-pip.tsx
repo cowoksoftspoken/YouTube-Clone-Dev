@@ -32,8 +32,14 @@ export default function FloatingPiP() {
   const pipHeight = 208;
 
   const [position, setPosition] = useState({
-    x: typeof window !== "undefined" ? Math.max(0, window.innerWidth - pipWidth - 20) : 0,
-    y: typeof window !== "undefined" ? Math.max(0, window.innerHeight - pipHeight - 20) : 0,
+    x:
+      typeof window !== "undefined"
+        ? Math.max(0, window.innerWidth - pipWidth - 20)
+        : 0,
+    y:
+      typeof window !== "undefined"
+        ? Math.max(0, window.innerHeight - pipHeight - 20)
+        : 0,
   });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -157,7 +163,7 @@ export default function FloatingPiP() {
             className="text-gray-300 p-2 hover:opacity-70 transition-opacity"
             onClick={() => {
               setIsPiP(false);
-              router.push(`/watch/${videoId}`);
+              router.push(`/watch?v=${videoId}`);
             }}
           >
             <Expand className="w-4 h-4" />

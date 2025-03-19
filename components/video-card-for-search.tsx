@@ -104,7 +104,7 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
     <div>
       <div className="flex gap-4 flex-col md:flex-row">
         <Link
-          href={`/watch/${videoId}`}
+          href={`/watch?v=${videoId}`}
           className="relative md:w-[320px] h-[180px] rounded-lg overflow-hidden aspect-video"
         >
           <div style={{ pointerEvents: "none" }}>
@@ -118,7 +118,7 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
         </Link>
 
         <div className="flex flex-col flex-1 space-y-2">
-          <Link href={`/watch/${videoId}`}>
+          <Link href={`/watch?v=${videoId}`}>
             <h3 className="font-semibold text-base line-clamp-2 dark:text-white text-black">
               {he.decode(video.snippet.title)}
             </h3>

@@ -98,9 +98,10 @@ export default function SearchBar({
     if (submittedQuery.trim()) {
       const sid = generateSessionId();
       router.push(
-        `/results?search_query=${encodeURIComponent(submittedQuery)}&sid=${btoa(
-          sid
-        )}&sort=relevance&date=${Date.now()}`
+        `/results?search_query=${encodeURIComponent(submittedQuery).replace(
+          /%20/g,
+          "+"
+        )}&sid=${btoa(sid)}&sort=relevance&date=${Date.now()}`
       );
       router.refresh();
       if (onCloseAction) onCloseAction();

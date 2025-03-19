@@ -42,7 +42,6 @@ export default function ChannelHeader({
   const { data: session } = useSession();
   const [isSubs, setIsSubs] = useState<boolean>(false);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
-  const [bannerURL, setBannerURL] = useState<string | undefined>(banner);
 
   useEffect(() => {
     if (session && session.accessToken) {
@@ -54,19 +53,6 @@ export default function ChannelHeader({
       });
     }
   }, [session, channelId]);
-
-  useEffect(() => {
-    const updateBannerResolution = () => {
-      if (banner) {
-        setBannerURL(window.innerWidth >= 768 ? `${banner}=w2560` : banner);
-      }
-    };
-
-    updateBannerResolution();
-    window.addEventListener("resize", updateBannerResolution);
-
-    return () => window.removeEventListener("resize", updateBannerResolution);
-  }, [banner]);
 
   const handleSubscribeToggle = async (): Promise<void> => {
     if (!session || !session.accessToken) return;
@@ -96,9 +82,17 @@ export default function ChannelHeader({
         style={{ pointerEvents: "none" }}
       >
         <img
-          src={bannerURL ?? "/background-default.avif"}
+          src={banner ?? "/background-default.avif"}
+          srcSet={`${
+            banner
+              ? `${banner}=w768 768w, ${banner}=w1200 1200w, ${banner}=w1920 1920w`
+              : "/background-default.avif"
+          }`}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 768px, 1200px"
           alt={`${channel.snippet.title}'s Banner`}
           className="w-full max-h-[150px] md:max-h-[200px] object-cover"
+          crossOrigin="anonymous"
+          loading="eager"
         />
       </div>
       <div className="flex items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-6 md:mb-8 mb-4">
@@ -123,6 +117,7 @@ export default function ChannelHeader({
                 ? "Verified"
                 : channel.snippet.title
             }
+            aria-label="Channel Name"
           >
             {channel.snippet.title}
             {Number.parseInt(channel.statistics.subscriberCount) >= 100000 && (
@@ -153,8 +148,12 @@ export default function ChannelHeader({
                  isSubs
                    ? "bg-[#272829] text-white"
                    : "text-white bg-[#060606] dark:bg-white dark:text-black"
-               }
-               `}
+               }`}
+            title={
+              isSubs
+                ? `Unsubscribe ${channel.snippet.title}`
+                : `Subscribe ${channel.snippet.title}`
+            }
             onClick={handleSubscribeToggle}
           >
             {isSubs ? "Subscribed" : "Subscribe"}

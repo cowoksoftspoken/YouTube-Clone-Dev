@@ -55,7 +55,7 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="p-6 max-w-[80%] mx-auto bg-background">
+    <div className="md:p-6 p-2 md:max-w-[80%] max-w-[100vw] mx-auto bg-background">
       <h1 className="text-2xl font-bold uppercase text-center">
         Upload Video TO Youtube
       </h1>

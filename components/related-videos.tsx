@@ -9,6 +9,14 @@ interface RelatedVideosProps {
   currentVideoTitle: string;
 }
 
+type Item = {
+  id: { kind: string };
+  snippet: {
+    title: string;
+    thumbnails: { medium: { url: string } };
+  };
+};
+
 export default function RelatedVideos({
   currentVideoTitle,
 }: RelatedVideosProps) {
@@ -20,7 +28,10 @@ export default function RelatedVideos({
       try {
         const searchQuery = currentVideoTitle.split(" ").slice(0, 3).join(" ");
         const { items } = await searchVideos(searchQuery);
-        setRelatedVideos(items.slice(0, 10));
+        const filteredVideos = items.filter(
+          (item: Item) => item.id.kind === "youtube#video"
+        );
+        setRelatedVideos(filteredVideos.slice(0, 10));
       } catch (error) {
         console.error("Error fetching related videos:", error);
       } finally {
