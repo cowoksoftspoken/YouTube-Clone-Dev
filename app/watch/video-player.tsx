@@ -21,10 +21,10 @@ import {
   unsubscribeChannel,
 } from "@/lib/youtube-api";
 import {
+  ArrowRight,
   CircleCheck,
   Download,
   MoreHorizontal,
-  PictureInPicture,
   Share2Icon,
   ThumbsDown,
   ThumbsUp,
@@ -152,7 +152,7 @@ export default function VideoPlayer({
     if (window.YT && window.YT.Player) {
       createPlayer();
     }
-  }, [isPiP]);
+  }, [isPiP, videoId]);
 
   const createPlayer = () => {
     if (!window.YT || !window.YT.Player) return;
@@ -256,13 +256,13 @@ export default function VideoPlayer({
               id="youtube-player"
               className="w-full h-[300px] md:h-full"
             ></div>
-            <div className="absolute flex md:left-[180px] left-[100px] md:bottom-1 bottom-0 gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute flex left-0 top-[8rem] md:top-[12rem] gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
-                className="text-white relative p-2"
+                className="text-white relative"
                 onClick={handlePiP}
                 title="Open Super Picture in Picture Mode"
               >
-                <PictureInPicture className="md:w-5 md:h-5 h-[1.5rem] w-[1.5rem]" />
+                <ArrowRight className="md:w-5 md:h-5 h-[1.5rem] w-[1.5rem]" />
               </button>
             </div>
           </div>

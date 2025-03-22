@@ -19,7 +19,7 @@ export default function Header() {
   const { data: session } = useSession();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [mediaTheme, setMediaTheme] = useState(false);
+  const [DinamicYoutubeIcon, setDinamicYoutubeIcon] = useState(YoutubeC);
   const { theme } = useTheme();
 
   const handleLogin = async () => {
@@ -27,20 +27,19 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const prefersTheme = window.matchMedia(
+    const prefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)"
     ).matches;
-    setMediaTheme(prefersTheme);
+    const icon =
+      theme === "dark"
+        ? YoutubeCWhite
+        : theme === "light"
+        ? YoutubeC
+        : prefersDark
+        ? YoutubeCWhite
+        : YoutubeC;
+    setDinamicYoutubeIcon(icon);
   }, [theme]);
-
-  const DinamicYoutubeIcon =
-    theme === "dark"
-      ? YoutubeCWhite
-      : theme === "light"
-      ? YoutubeC
-      : mediaTheme
-      ? YoutubeCWhite
-      : YoutubeC;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:p-2 p-0 py-1">

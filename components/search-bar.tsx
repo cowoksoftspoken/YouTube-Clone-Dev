@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Mic, MicOff, Search, X } from "lucide-react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { generateSessionId } from "@/lib/utils";
 import { fetchSearchSuggestions } from "@/lib/youtube-api";
 import he from "he";
+import { Mic, MicOff, Search, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 declare global {
   interface Window {
@@ -96,12 +95,11 @@ export default function SearchBar({
   const handleSubmit = (e: React.FormEvent, submittedQuery: string = query) => {
     e.preventDefault();
     if (submittedQuery.trim()) {
-      const sid = generateSessionId();
       router.push(
         `/results?search_query=${encodeURIComponent(submittedQuery).replace(
           /%20/g,
           "+"
-        )}&sid=${btoa(sid)}&sort=relevance&date=${Date.now()}`
+        )}`
       );
       router.refresh();
       if (onCloseAction) onCloseAction();

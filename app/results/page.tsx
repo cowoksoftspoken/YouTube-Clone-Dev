@@ -14,9 +14,6 @@ const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500"] });
 export default function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("search_query") || "";
-  const sid = searchParams.get("sid") || "";
-  const shortedBy = searchParams.get("sort") || "Relevance";
-  const date = searchParams.get("date") || Date.now().toString();
 
   const [videos, setVideos] = useState<any[]>([]);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
@@ -39,11 +36,25 @@ export default function SearchResults() {
     }
   };
 
+  function generateUUID() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        let r = (Math.random() * 16) | 0,
+          v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
+  }
+
   useEffect(() => {
     setVideos([]);
     setNextPageToken(null);
     setLoading(true);
     loadMoreVideos();
+    document
+      .getElementById("search-results")
+      ?.setAttribute(`data-v-${generateUUID()}`, "");
   }, [query]);
 
   useEffect(() => {
@@ -53,7 +64,7 @@ export default function SearchResults() {
   }, [inView, loadMoreVideos]);
 
   return (
-    <div className={roboto.className} id={sid}>
+    <div className={roboto.className} id="search-results">
       <span className="sr-only">Penelusuran untuk {query}</span>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 cursor-pointer" role="button">
@@ -74,11 +85,7 @@ export default function SearchResults() {
           Sort
         </div>
       </div>
-      <div
-        className="grid grid-cols-1 gap-4"
-        data-shortedby={shortedBy}
-        data-searchdate={new Date(Number(date))}
-      >
+      <div className="grid grid-cols-1 gap-4">
         {videos.map((video, index) => (
           <VideoCardForSearch key={index + 2} video={video} />
         ))}
