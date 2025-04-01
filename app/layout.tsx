@@ -7,6 +7,7 @@ import SidebarDesktop from "@/components/sidebar-desktop";
 import SessionProvider from "@/components/session-provider";
 import { PiPProvider } from "@/contexts/PIPContext";
 import FloatingPiP from "@/components/floating-pip";
+import { location } from "@/lib/location";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,21 +62,42 @@ export const viewport: Viewport = {
   themeColor: "#FF0000",
 };
 
-const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { country, country_capital, city, timezone, languages } =
+    await location();
+
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "User",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: city,
+      addressCountry: country,
+      addressRegion: country_capital,
+    },
+    timeZone: timezone,
+    language: languages,
+  };
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html
+      lang={languages.split(",")[0].split("-")[0] || "en"}
+      className="scroll-smooth"
+      suppressHydrationWarning
+    >
       <body
         className={`${inter.className} antialiased`}
-        data-prefered-locale={locale}
-        data-prefered-timezone={timeZone}
+        data-prefered-address={city}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
+        />
+
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -87,7 +109,7 @@ export default function RootLayout({
               <div className="flex h-screen flex-col">
                 <Header />
                 <div className="flex flex-1 overflow-hidden">
-                  <SidebarDesktop />
+                  {/* <SidebarDesktop /> */}
                   <main className="flex-1 overflow-y-auto p-4">{children}</main>
                 </div>
               </div>

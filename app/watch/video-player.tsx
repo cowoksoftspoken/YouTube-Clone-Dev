@@ -239,6 +239,8 @@ export default function VideoPlayer({
     parseInt(channelDetails.statistics.subscriberCount) > 100000 &&
     channelDetails.snippet.customUrl;
 
+  const hasVevo = video.snippet.channelTitle;
+
   return (
     <div className="flex flex-col lg:flex-row gap-8 overflow-hidden">
       <div className="lg:w-2/3">
@@ -298,9 +300,21 @@ export default function VideoPlayer({
                   className="font-semibold flex items-center cursor-pointer gap-1"
                   title={channelDetails.snippet.title}
                 >
-                  {video.snippet.channelTitle.length > 13
-                    ? video.snippet.channelTitle.slice(0, 13) + ".."
+                  {video.snippet.channelTitle.length > 13 || hasVevo
+                    ? video.snippet.channelTitle
+                        .slice(0, 13)
+                        .replace(/VEVO$/, "") + ".."
                     : video.snippet.channelTitle}
+                  {hasVevo.includes("VEVO") && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-[.5rem] text-black dark:text-white"
+                      viewBox="0 0 1508.2414 380"
+                      fill="currentColor"
+                    >
+                      <path d="M1318.241 0a190 190 0 1 0 190 190 190 190 0 0 0-190-190Zm0 278.667c-47.504 0-82.333-38-82.333-88.667s34.859-88.667 82.333-88.667 82.333 38.008 82.333 88.667-34.833 88.667-82.333 88.667Zm-557.333-88.667c0-104.935-82.23-190-183.667-190s-183.667 85.065-183.667 190 82.321 190 186.833 190c83.477 0 148.939-50.454 170.716-120.333H640.575c-15.337 22.692-37.888 28.5-60.167 28.5-42.728 0-69.955-29.41-78.499-69.667h256.936a198 198 0 0 0 2.063-28.5ZM577.242 88.667c36.647 0 65.049 25.245 73.756 63.333H503.34c9.857-39.593 36.098-63.333 73.902-63.333ZM209.908 376.833 0 11.083h123.586l86.322 166.25 86.323-166.25h123.586Zm734.667 0L734.667 11.083h123.587l86.321 166.25 86.323-166.25h123.587Z" />
+                    </svg>
+                  )}
                   {isVerified && (
                     <CircleCheck
                       color="currentColor"
@@ -367,7 +381,7 @@ export default function VideoPlayer({
               <Share2Icon className="cursor-pointer mr-2 h-4 w-4" />
               Share
             </button>
-            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex lg:hidden dark:text-white px-4 py-2 rounded-full items-center space-x-2 text-sm ml-2">
+            <button className="cursor-pointer dark:bg-[#272928] bg-slate-200 text-black flex dark:text-white px-4 py-2 rounded-full items-center space-x-2 text-sm ml-2">
               <Download className="cursor-pointer mr-2 h-4 w-4" />
               Download
             </button>

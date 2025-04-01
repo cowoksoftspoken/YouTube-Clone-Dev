@@ -99,19 +99,19 @@ export default function Sidebar({
     <>
       <div
         className={cn(
-          "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-opacity md:hidden",
+          "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-opacity",
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={onCloseAction}
       />
       <aside
         className={cn(
-          "fixed top-0 left-0 bottom-0 z-50 w-64 bg-background transition-transform duration-300 ease-in-out transform md:translate-x-0 md:static h-[100vh] overflow-y-auto",
+          "fixed top-0 left-0 bottom-0 z-50 w-64 bg-background transition-transform duration-300 ease-in-out transform  h-[100vh] overflow-y-auto",
           isOpen ? "translate-x-0" : "-translate-x-full",
           className
         )}
       >
-        <div className="flex justify-between items-center p-4 md:hidden">
+        <div className="flex justify-between items-center p-4">
           <span className="font-semibold flex items-center max-h-8">
             <img
               src={DinamicYoutubeIcon}

@@ -66,7 +66,7 @@ export default function SearchResults() {
   return (
     <div className={roboto.className} id="search-results">
       <span className="sr-only">Penelusuran untuk {query}</span>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 md:px-8 px-0">
         <div className="flex items-center gap-2 cursor-pointer" role="button">
           <FilterIcon className="h-5 w-5" />
           Filter
@@ -85,7 +85,7 @@ export default function SearchResults() {
           Sort
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:px-8 px-0">
         {videos.map((video, index) => (
           <VideoCardForSearch key={index + 2} video={video} />
         ))}

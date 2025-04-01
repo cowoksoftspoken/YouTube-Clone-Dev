@@ -49,7 +49,7 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setIsSidebarOpen((state) => !state)}
-            className="mr-2 md:hidden"
+            className="mr-2"
           >
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle sidebar</span>
@@ -123,7 +123,7 @@ export default function Header() {
       )}
       <Sidebar
         isOpen={isSidebarOpen}
-        className="md:hidden block"
+        className="block"
         onCloseAction={() => setIsSidebarOpen(false)}
       />
     </header>

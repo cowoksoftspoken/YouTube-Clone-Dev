@@ -101,7 +101,6 @@ export default function SearchBar({
           "+"
         )}`
       );
-      router.refresh();
       if (onCloseAction) onCloseAction();
     }
     setShowSuggestions(false);
