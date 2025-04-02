@@ -126,7 +126,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
               video.snippet.thumbnails.high.url
             } 1280w`.trim()}
             sizes="(max-width: 320px) 120px, (max-width: 768px) 320px, (max-width: 1024px) 480px, (max-width: 1280px) 640px, 1280px"
-            className="object-cover transition-transform group-hover:scale-110 w-full"
+            className="object-cover transition-transform group-hover:scale-110 w-full h-full"
             width={width}
             height={compact ? 120 : 360}
             alt={video.snippet.title}
@@ -154,7 +154,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             <div className="flex-grow">
               <Link href={`/watch?v=${videoId}`}>
                 <h3 className="font-medium text-sm line-clamp-2 mb-1">
-                  {video.snippet.title}
+                  {he.decode(video.snippet.title)}
                 </h3>
               </Link>
               <div className="flex items-center text-sm text-muted-foreground">
