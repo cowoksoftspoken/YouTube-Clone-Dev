@@ -11,7 +11,13 @@ interface Video {
   id: { videoId?: string; channelId?: string; kind: string } | string;
   snippet: {
     title: string;
-    thumbnails: { medium: { url: string }; default: { url: string } };
+    thumbnails: {
+      default: { url: string };
+      medium: { url: string };
+      high: { url: string };
+      standard?: { url: string };
+      maxres?: { url: string };
+    };
     channelTitle: string;
     channelId: string;
     publishedAt: string;
@@ -120,11 +126,28 @@ export default function SearchResultCard({ video }: SearchResultCardProps) {
       <div className="flex gap-2 flex-col md:flex-row">
         <Link
           href={`/watch?v=${videoId}`}
-          className="relative md:w-[560px] h-[300px] md:h-[300px] rounded-lg overflow-hidden aspect-video"
+          className="relative md:w-[560px] md:h-[300px] rounded-lg overflow-hidden aspect-video"
         >
-          <div style={{ pointerEvents: "none" }}>
-            <OptimizedImage
+          <div
+            style={{
+              pointerEvents: "none",
+              userSelect: "none",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <img
               src={video.snippet.thumbnails.medium.url}
+              srcSet={`${video.snippet.thumbnails.default.url} 120w, ${
+                video.snippet.thumbnails.medium.url
+              } 320w, ${video.snippet.thumbnails.high.url} 480w, ${
+                video.snippet.thumbnails.standard?.url ||
+                video.snippet.thumbnails.high.url
+              } 640w, ${
+                video.snippet.thumbnails.maxres?.url ||
+                video.snippet.thumbnails.high.url
+              } 1280w`.trim()}
+              sizes="(max-width: 320px) 120px, (max-width: 768px) 320px, (max-width: 1024px) 480px, (max-width: 1280px) 640px, 1280px"
               alt={video.snippet.title}
               loading="eager"
               className="w-full h-full object-cover"

@@ -302,8 +302,8 @@ export default function VideoPlayer({
                 >
                   {video.snippet.channelTitle.length > 13 || hasVevo
                     ? video.snippet.channelTitle
-                        .slice(0, 13)
-                        .replace(/VEVO$/, "") + ".."
+                        .replace(/VEVO$/, "")
+                        .slice(0, 13) + ".."
                     : video.snippet.channelTitle}
                   {hasVevo.includes("VEVO") && (
                     <svg

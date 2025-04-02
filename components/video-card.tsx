@@ -12,7 +12,13 @@ interface Video {
   id: { videoId: string } | string;
   snippet: {
     title: string;
-    thumbnails: { medium: { url: string }; default: { url: string } };
+    thumbnails: {
+      default: { url: string };
+      medium: { url: string };
+      high: { url: string };
+      standard?: { url: string };
+      maxres?: { url: string };
+    };
     channelTitle: string;
     channelId: string;
     publishedAt: string;
@@ -65,35 +71,36 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
     }
   }, [video.snippet.channelId, compact]);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+  //   const ctx = canvas.getContext("2d");
 
-    if (!ctx) return;
+  //   if (!ctx) return;
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = compact
-      ? video.snippet.thumbnails?.default?.url
-      : video.snippet.thumbnails?.medium?.url
-      ? video.snippet.thumbnails.medium.url
-      : "/placeholder.svg";
+  //   const img = new Image();
+  //   img.crossOrigin = "anonymous";
+  //   img.src = compact
+  //     ? video.snippet.thumbnails?.default?.url
+  //     : video.snippet.thumbnails?.medium?.url
+  //     ? video.snippet.thumbnails.medium.url
+  //     : "/placeholder.svg";
 
-    img.onload = () => {
-      const aspectRatio = img.width / img.height;
-      const width = compact ? 200 : isMobile ? 280 : 520;
-      const height = width / aspectRatio;
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-  }, [video, compact, isMobile]);
+  //   img.onload = () => {
+  //     const aspectRatio = img.width / img.height;
+  //     const width = compact ? 200 : isMobile ? 280 : 520;
+  //     const height = width / aspectRatio;
+  //     canvas.width = width;
+  //     canvas.height = height;
+  //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  //   };
+  // }, [video, compact, isMobile]);
 
   const hasVevo = video.snippet.channelTitle.endsWith("VEVO");
+  const width = compact ? 200 : isMobile ? 280 : 520;
 
   return (
     <div
@@ -107,9 +114,22 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             compact ? "w-[11rem] flex-shrink-0" : "aspect-video"
           }`}
         >
-          <canvas
-            ref={canvasRef}
+          <img
+            src={video.snippet.thumbnails.medium.url}
+            srcSet={`${video.snippet.thumbnails.default.url} 120w, ${
+              video.snippet.thumbnails.medium.url
+            } 320w, ${video.snippet.thumbnails.high.url} 480w, ${
+              video.snippet.thumbnails.standard?.url ||
+              video.snippet.thumbnails.high.url
+            } 640w, ${
+              video.snippet.thumbnails.maxres?.url ||
+              video.snippet.thumbnails.high.url
+            } 1280w`.trim()}
+            sizes="(max-width: 320px) 120px, (max-width: 768px) 320px, (max-width: 1024px) 480px, (max-width: 1280px) 640px, 1280px"
             className="object-cover transition-transform group-hover:scale-110 w-full"
+            width={width}
+            height={compact ? 120 : 360}
+            alt={video.snippet.title}
           />
           {video.contentDetails && (
             <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 rounded">
