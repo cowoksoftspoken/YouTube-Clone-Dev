@@ -6,9 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default async function WatchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ v: string }>;
+  searchParams: Promise<{ v: string, playlistid?: string }>;
 }) {
   const resolvedParams = (await searchParams).v;
+  if(!resolvedParams) return;
   const videoData = await fetchVideoDetails(resolvedParams as string);
   const channelData = await fetchChannelDetails(videoData?.snippet?.channelId);
 
