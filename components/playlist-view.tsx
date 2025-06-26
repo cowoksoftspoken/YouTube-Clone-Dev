@@ -50,7 +50,7 @@ export default function PlaylistView({ playlistId }: PlaylistViewProps) {
   const handlePlayAll = () => {
     if (videos.length > 0) {
       router.push(
-        `/watch/${videos[0].snippet.resourceId.videoId}?playlist=${playlistId}`
+        `/watch?v=${videos[0].snippet.resourceId.videoId}?playlist=${playlistId}`
       );
     }
   };
